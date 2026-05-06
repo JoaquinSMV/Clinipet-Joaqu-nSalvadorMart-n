@@ -75,11 +75,20 @@
     <Compile Include="FrmDashboard.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FrmDashboard.Designer.cs">
+      <DependentUpon>FrmDashboard.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmInventario.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FrmInventario.Designer.cs">
+      <DependentUpon>FrmInventario.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmServicios.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmServicios.Designer.cs">
+      <DependentUpon>FrmServicios.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmClientes.cs">
       <SubType>Form</SubType>
