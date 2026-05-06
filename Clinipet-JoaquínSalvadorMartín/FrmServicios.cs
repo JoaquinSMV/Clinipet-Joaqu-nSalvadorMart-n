@@ -56,6 +56,7 @@ namespace Clinipet_JoaquínSalvadorMartín
                 Font = new Font("Segoe UI Semibold", 10F)
             };
             btnNuevo.FlatAppearance.BorderSize = 0;
+            btnNuevo.Click += (s, e) => AbrirFormularioNuevoServicio();
             pnlAcciones.Controls.Add(btnNuevo);
 
             Button btnExportar = new Button {
@@ -139,6 +140,32 @@ namespace Clinipet_JoaquínSalvadorMartín
                 GestorPDF pdf = new GestorPDF();
                 string path = pdf.ExportarTablaATexto(dt, "Catálogo de Servicios");
                 MessageBox.Show("Reporte generado en: " + path, "Exportación Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void AbrirFormularioNuevoServicio()
+        {
+            using (FrmNuevoServicio frm = new FrmNuevoServicio())
+            {
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    bool resultado = gestor.AgregarServicio(
+                        frm.NombreServicio,
+                        frm.Descripcion,
+                        frm.Precio,
+                        frm.Categoria
+                    );
+
+                    if (resultado)
+                    {
+                        MessageBox.Show("Servicio añadido correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        CargarServicios();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error al añadir el servicio.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
         }
 

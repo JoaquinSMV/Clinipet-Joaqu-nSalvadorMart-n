@@ -416,20 +416,27 @@ namespace Clinipet_JoaquínSalvadorMartín
                     lblRecaudado.Text = string.Format("{0:N2}€", row["total_recaudado"]);
                 }
 
-                // Cargar Gráfica
-                DataTable dtCitas = gestor.ObtenerCitasPorMes();
-                if (dtCitas != null && dtCitas.Rows.Count > 0)
+                // Cargar Gráfica (con validación de seguridad)
+                if (chartCitas != null)
                 {
-                    chartCitas.Series.Clear();
-                    var serie = chartCitas.Series.Add("Citas");
-                    serie.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.SplineArea;
-                    serie.Color = Color.FromArgb(150, 0, 184, 148);
-                    serie.BorderColor = Color.FromArgb(0, 184, 148);
-                    serie.BorderWidth = 3;
-
-                    foreach (DataRow r in dtCitas.Rows)
+                    DataTable dtCitas = gestor.ObtenerCitasPorMes();
+                    if (dtCitas != null && dtCitas.Rows.Count > 0)
                     {
-                        serie.Points.AddXY(r["nombre_mes"].ToString(), r["total_citas"]);
+                        try
+                        {
+                            chartCitas.Series.Clear();
+                            var serie = chartCitas.Series.Add("Citas");
+                            serie.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.SplineArea;
+                            serie.Color = Color.FromArgb(150, 0, 184, 148);
+                            serie.BorderColor = Color.FromArgb(0, 184, 148);
+                            serie.BorderWidth = 3;
+
+                            foreach (DataRow r in dtCitas.Rows)
+                            {
+                                serie.Points.AddXY(r["nombre_mes"].ToString(), r["total_citas"]);
+                            }
+                        }
+                        catch { }
                     }
                 }
             }

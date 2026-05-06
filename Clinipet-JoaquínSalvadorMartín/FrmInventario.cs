@@ -65,7 +65,7 @@ namespace Clinipet_JoaquínSalvadorMartín
             pnlTop.Controls.Add(cmbCategorias);
 
             Button btnNuevo = CrearBoton("  ✚  Nuevo Producto", Color.FromArgb(0, 184, 148), new Point(420, 48));
-            btnNuevo.Click += (s, e) => MessageBox.Show("Funcionalidad para añadir producto en desarrollo.");
+            btnNuevo.Click += (s, e) => AbrirFormularioNuevoProducto();
             pnlTop.Controls.Add(btnNuevo);
 
             Button btnEntrada = CrearBoton("  📥  Entrada Stock", Color.FromArgb(9, 132, 227), new Point(610, 48));
@@ -164,6 +164,35 @@ namespace Clinipet_JoaquínSalvadorMartín
                 GestorPDF pdf = new GestorPDF();
                 string path = pdf.ExportarTablaATexto(dt, "Inventario de Medicamentos");
                 MessageBox.Show("Reporte generado en: " + path, "Exportación Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void AbrirFormularioNuevoProducto()
+        {
+            using (FrmNuevoProducto frm = new FrmNuevoProducto())
+            {
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    bool resultado = gestor.AgregarMedicamento(
+                        frm.NombreProducto,
+                        frm.Descripcion,
+                        frm.Cantidad,
+                        frm.CantidadMinima,
+                        frm.Precio,
+                        frm.FechaVencimiento,
+                        frm.Proveedor
+                    );
+
+                    if (resultado)
+                    {
+                        MessageBox.Show("Producto añadido correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        CargarDatos();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error al añadir el producto.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
         }
 
