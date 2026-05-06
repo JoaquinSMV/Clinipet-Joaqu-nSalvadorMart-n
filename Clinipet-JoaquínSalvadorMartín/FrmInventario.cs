@@ -249,7 +249,7 @@ namespace Clinipet_JoaquínSalvadorMartín
             
             // Obtener el ID del producto desde la columna correspondiente
             int idProducto = 0;
-            if (row.Cells.Contains("id_medicamento") && row.Cells["id_medicamento"].Value != null)
+            if (dgvProductos.Columns.Contains("id_medicamento") && row.Cells["id_medicamento"].Value != null)
                 idProducto = Convert.ToInt32(row.Cells["id_medicamento"].Value);
             else if (int.TryParse(row.Cells[0].Value?.ToString(), out int id))
                 idProducto = id;
@@ -259,7 +259,7 @@ namespace Clinipet_JoaquínSalvadorMartín
                 frm.Text = "Editar Producto";
                 
                 // Usar nombres de columna si están disponibles, de lo contrario usar índices corregidos
-                if (row.Cells.Contains("nombre_medicamento"))
+                if (dgvProductos.Columns.Contains("nombre_medicamento"))
                 {
                     frm.NombreProducto = row.Cells["nombre_medicamento"].Value?.ToString() ?? "";
                     frm.Descripcion = row.Cells["descripcion"].Value?.ToString() ?? "";

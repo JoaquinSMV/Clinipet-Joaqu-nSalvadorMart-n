@@ -206,7 +206,7 @@ namespace Clinipet_JoaquínSalvadorMartín
             DataGridViewRow row = dgvServicios.SelectedRows[0];
             
             int idServicio = 0;
-            if (row.Cells.Contains("id_servicio") && row.Cells["id_servicio"].Value != null)
+            if (dgvServicios.Columns.Contains("id_servicio") && row.Cells["id_servicio"].Value != null)
                 idServicio = Convert.ToInt32(row.Cells["id_servicio"].Value);
             else if (int.TryParse(row.Cells[0].Value?.ToString(), out int id))
                 idServicio = id;
@@ -215,7 +215,7 @@ namespace Clinipet_JoaquínSalvadorMartín
             {
                 frm.Text = "Editar Servicio";
                 
-                if (row.Cells.Contains("nombre_servicio"))
+                if (dgvServicios.Columns.Contains("nombre_servicio"))
                 {
                     frm.NombreServicio = row.Cells["nombre_servicio"].Value?.ToString() ?? "";
                     frm.Descripcion = row.Cells["descripcion"].Value?.ToString() ?? "";
