@@ -404,36 +404,42 @@ namespace Clinipet_JoaquínSalvadorMartín
         {
             try
             {
+                if (this.IsDisposed || !this.Created)
+                    return;
+
                 GestorEstadisticas gestor = new GestorEstadisticas();
                 DataTable dt = gestor.ObtenerEstadisticasGenerales();
                 
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     DataRow row = dt.Rows[0];
-                    lblClientes.Text = row["total_clientes"].ToString();
-                    lblMascotas.Text = row["total_mascotas"].ToString();
-                    lblCitas.Text = row["citas_hoy"].ToString();
-                    lblRecaudado.Text = string.Format("{0:N2}€", row["total_recaudado"]);
+                    if (lblClientes != null) lblClientes.Text = row["total_clientes"].ToString();
+                    if (lblMascotas != null) lblMascotas.Text = row["total_mascotas"].ToString();
+                    if (lblCitas != null) lblCitas.Text = row["citas_hoy"].ToString();
+                    if (lblRecaudado != null) lblRecaudado.Text = string.Format("{0:N2}€", row["total_recaudado"]);
                 }
 
-                // Cargar Gráfica (con validación de seguridad)
-                if (chartCitas != null)
+                // Cargar Gráfica (con validación exhaustiva)
+                if (chartCitas != null && !chartCitas.IsDisposed)
                 {
                     DataTable dtCitas = gestor.ObtenerCitasPorMes();
                     if (dtCitas != null && dtCitas.Rows.Count > 0)
                     {
                         try
                         {
-                            chartCitas.Series.Clear();
-                            var serie = chartCitas.Series.Add("Citas");
-                            serie.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.SplineArea;
-                            serie.Color = Color.FromArgb(150, 0, 184, 148);
-                            serie.BorderColor = Color.FromArgb(0, 184, 148);
-                            serie.BorderWidth = 3;
-
-                            foreach (DataRow r in dtCitas.Rows)
+                            if (chartCitas.Series != null)
                             {
-                                serie.Points.AddXY(r["nombre_mes"].ToString(), r["total_citas"]);
+                                chartCitas.Series.Clear();
+                                var serie = chartCitas.Series.Add("Citas");
+                                serie.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.SplineArea;
+                                serie.Color = Color.FromArgb(150, 0, 184, 148);
+                                serie.BorderColor = Color.FromArgb(0, 184, 148);
+                                serie.BorderWidth = 3;
+
+                                foreach (DataRow r in dtCitas.Rows)
+                                {
+                                    serie.Points.AddXY(r["nombre_mes"].ToString(), r["total_citas"]);
+                                }
                             }
                         }
                         catch { }

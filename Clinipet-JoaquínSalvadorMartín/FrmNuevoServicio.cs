@@ -21,8 +21,8 @@ namespace Clinipet_JoaquínSalvadorMartín
         public FrmNuevoServicio()
         {
             this.Text = "Nuevo Servicio";
-            this.Width = 450;
-            this.Height = 350;
+            this.Width = 550;
+            this.Height = 420;
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -35,30 +35,32 @@ namespace Clinipet_JoaquínSalvadorMartín
         private void CrearControles()
         {
             int y = 20;
-            const int alturaControl = 30;
-            const int espaciado = 40;
+            const int margenIzq = 20;
+            const int anchoControl = 480;
+            const int espaciado = 50;
 
             // Nombre
-            Label lblNombre = new Label { Text = "Nombre del Servicio:", Location = new Point(20, y), AutoSize = true };
+            Label lblNombre = new Label { Text = "Nombre del Servicio:", Location = new Point(margenIzq, y), AutoSize = true, Font = new Font("Segoe UI", 10F, FontStyle.Bold) };
             this.Controls.Add(lblNombre);
-            txtNombre = new TextBox { Location = new Point(20, y + 25), Width = 400, Font = new Font("Segoe UI", 10F) };
+            txtNombre = new TextBox { Location = new Point(margenIzq, y + 25), Width = anchoControl, Height = 30, Font = new Font("Segoe UI", 10F) };
             this.Controls.Add(txtNombre);
             y += espaciado;
 
             // Descripción
-            Label lblDesc = new Label { Text = "Descripción:", Location = new Point(20, y), AutoSize = true };
+            Label lblDesc = new Label { Text = "Descripción:", Location = new Point(margenIzq, y), AutoSize = true, Font = new Font("Segoe UI", 10F, FontStyle.Bold) };
             this.Controls.Add(lblDesc);
-            txtDescripcion = new TextBox { Location = new Point(20, y + 25), Width = 400, Height = 60, Multiline = true, Font = new Font("Segoe UI", 10F) };
+            txtDescripcion = new TextBox { Location = new Point(margenIzq, y + 25), Width = anchoControl, Height = 70, Multiline = true, Font = new Font("Segoe UI", 10F) };
             this.Controls.Add(txtDescripcion);
-            y += 90;
+            y += 100;
 
             // Categoría
-            Label lblCat = new Label { Text = "Categoría:", Location = new Point(20, y), AutoSize = true };
+            Label lblCat = new Label { Text = "Categoría:", Location = new Point(margenIzq, y), AutoSize = true, Font = new Font("Segoe UI", 10F, FontStyle.Bold) };
             this.Controls.Add(lblCat);
             cmbCategoria = new ComboBox
             {
-                Location = new Point(20, y + 25),
-                Width = 180,
+                Location = new Point(margenIzq, y + 25),
+                Width = 220,
+                Height = 30,
                 DropDownStyle = ComboBoxStyle.DropDown,
                 Font = new Font("Segoe UI", 10F)
             };
@@ -67,9 +69,9 @@ namespace Clinipet_JoaquínSalvadorMartín
             this.Controls.Add(cmbCategoria);
 
             // Precio
-            Label lblPrecio = new Label { Text = "Precio (€):", Location = new Point(240, y), AutoSize = true };
+            Label lblPrecio = new Label { Text = "Precio (€):", Location = new Point(280, y), AutoSize = true, Font = new Font("Segoe UI", 10F, FontStyle.Bold) };
             this.Controls.Add(lblPrecio);
-            txtPrecio = new TextBox { Location = new Point(240, y + 25), Width = 180, Font = new Font("Segoe UI", 10F) };
+            txtPrecio = new TextBox { Location = new Point(280, y + 25), Width = 220, Height = 30, Font = new Font("Segoe UI", 10F) };
             this.Controls.Add(txtPrecio);
             y += espaciado;
 
@@ -77,13 +79,14 @@ namespace Clinipet_JoaquínSalvadorMartín
             btnGuardar = new Button
             {
                 Text = "✓ Guardar",
-                Location = new Point(120, y + 20),
-                Width = 150,
-                Height = 35,
+                Location = new Point(120, y + 10),
+                Width = 180,
+                Height = 40,
                 BackColor = Color.FromArgb(0, 184, 148),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI Semibold", 10F)
+                Font = new Font("Segoe UI Semibold", 11F),
+                Cursor = Cursors.Hand
             };
             btnGuardar.FlatAppearance.BorderSize = 0;
             btnGuardar.Click += BtnGuardar_Click;
@@ -92,13 +95,14 @@ namespace Clinipet_JoaquínSalvadorMartín
             btnCancelar = new Button
             {
                 Text = "✕ Cancelar",
-                Location = new Point(280, y + 20),
-                Width = 150,
-                Height = 35,
+                Location = new Point(310, y + 10),
+                Width = 180,
+                Height = 40,
                 BackColor = Color.FromArgb(220, 53, 69),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI Semibold", 10F)
+                Font = new Font("Segoe UI Semibold", 11F),
+                Cursor = Cursors.Hand
             };
             btnCancelar.FlatAppearance.BorderSize = 0;
             btnCancelar.Click += (s, e) => this.DialogResult = DialogResult.Cancel;
@@ -122,7 +126,7 @@ namespace Clinipet_JoaquínSalvadorMartín
             NombreServicio = txtNombre.Text;
             Descripcion = txtDescripcion.Text;
             Precio = precio;
-            Categoria = cmbCategoria.SelectedItem.ToString();
+            Categoria = cmbCategoria.SelectedItem?.ToString() ?? "Consulta";
 
             this.DialogResult = DialogResult.OK;
             this.Close();
