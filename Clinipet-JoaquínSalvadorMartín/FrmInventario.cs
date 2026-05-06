@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Clinipet_JoaquínSalvadorMartín
@@ -12,6 +13,12 @@ namespace Clinipet_JoaquínSalvadorMartín
         private DataGridView dgvProductos;
         private ComboBox cmbCategorias;
         private TextBox txtBuscar;
+
+        // Win32 API para placeholder en TextBox (.NET Framework compatible)
+        private const int EM_SETCUEBANNER = 0x1501;
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern Int32 SendMessage(IntPtr hWnd, int msg, int wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
 
         public FrmInventario()
         {
@@ -37,11 +44,12 @@ namespace Clinipet_JoaquínSalvadorMartín
             pnlTop.Controls.Add(lblTitulo);
 
             txtBuscar = new TextBox { 
-                PlaceholderText = "🔍 Buscar producto...", 
                 Width = 250, 
                 Location = new Point(0, 50),
                 Font = new Font("Segoe UI", 10F)
             };
+            // Establecer el placeholder usando Win32 API
+            SendMessage(txtBuscar.Handle, EM_SETCUEBANNER, 0, "🔍 Buscar producto...");
             txtBuscar.TextChanged += (s, e) => FiltrarProductos();
             pnlTop.Controls.Add(txtBuscar);
 
