@@ -1,6 +1,6 @@
 -- ============================================================================
--- SCRIPT DE BASE DE DATOS PARA MEJORAS DE CLINIPET
--- Rama: mejoras/pdf-reportes-estadisticas
+-- SCRIPT DE BASE DE DATOS PARA MEJORAS DE CLINIPET (CORREGIDO)
+-- Rama: mejoras-clinipet
 -- Fecha: 2026-05-06
 -- ============================================================================
 
@@ -10,7 +10,6 @@ GO
 
 -- ============================================================================
 -- TABLA: servicios
--- Descripción: Catálogo de servicios y tratamientos disponibles en la clínica
 -- ============================================================================
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[servicios]') AND type in (N'U'))
 BEGIN
@@ -30,13 +29,10 @@ BEGIN
     
     PRINT 'Tabla servicios creada exitosamente';
 END
-ELSE
-    PRINT 'Tabla servicios ya existe';
 GO
 
 -- ============================================================================
 -- TABLA: medicamentos
--- Descripción: Inventario de medicamentos y suministros
 -- ============================================================================
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[medicamentos]') AND type in (N'U'))
 BEGIN
@@ -56,17 +52,13 @@ BEGIN
     
     CREATE INDEX IX_medicamentos_activo ON [dbo].[medicamentos]([activo]);
     CREATE INDEX IX_medicamentos_fecha_vencimiento ON [dbo].[medicamentos]([fecha_vencimiento]);
-    CREATE INDEX IX_medicamentos_stock ON [dbo].[medicamentos]([cantidad_stock]);
     
     PRINT 'Tabla medicamentos creada exitosamente';
 END
-ELSE
-    PRINT 'Tabla medicamentos ya existe';
 GO
 
 -- ============================================================================
 -- TABLA: movimientos_inventario
--- Descripción: Registro de movimientos de entrada/salida de medicamentos
 -- ============================================================================
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[movimientos_inventario]') AND type in (N'U'))
 BEGIN
@@ -80,53 +72,27 @@ BEGIN
             REFERENCES [dbo].[medicamentos]([id_medicamento])
     );
     
-    CREATE INDEX IX_movimientos_medicamento ON [dbo].[movimientos_inventario]([id_medicamento]);
-    CREATE INDEX IX_movimientos_fecha ON [dbo].[movimientos_inventario]([fecha_movimiento]);
-    
     PRINT 'Tabla movimientos_inventario creada exitosamente';
 END
-ELSE
-    PRINT 'Tabla movimientos_inventario ya existe';
 GO
 
 -- ============================================================================
 -- ALTERACIONES A TABLA: citas
--- Descripción: Agregar campos para diagnóstico, tratamiento y medicamentos
 -- ============================================================================
 IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[citas]') AND name = 'diagnostico')
-BEGIN
     ALTER TABLE [dbo].[citas] ADD [diagnostico] NVARCHAR(MAX);
-    PRINT 'Campo diagnostico agregado a tabla citas';
-END
-ELSE
-    PRINT 'Campo diagnostico ya existe en tabla citas';
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[citas]') AND name = 'tratamiento')
-BEGIN
     ALTER TABLE [dbo].[citas] ADD [tratamiento] NVARCHAR(MAX);
-    PRINT 'Campo tratamiento agregado a tabla citas';
-END
-ELSE
-    PRINT 'Campo tratamiento ya existe en tabla citas';
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[citas]') AND name = 'medicamentos')
-BEGIN
     ALTER TABLE [dbo].[citas] ADD [medicamentos] NVARCHAR(MAX);
-    PRINT 'Campo medicamentos agregado a tabla citas';
-END
-ELSE
-    PRINT 'Campo medicamentos ya existe en tabla citas';
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[citas]') AND name = 'observaciones')
-BEGIN
     ALTER TABLE [dbo].[citas] ADD [observaciones] NVARCHAR(MAX);
-    PRINT 'Campo observaciones agregado a tabla citas';
-END
-ELSE
-    PRINT 'Campo observaciones ya existe en tabla citas';
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[citas]') AND name = 'id_servicio')
@@ -134,26 +100,57 @@ BEGIN
     ALTER TABLE [dbo].[citas] ADD [id_servicio] INT;
     ALTER TABLE [dbo].[citas] ADD CONSTRAINT FK_citas_servicios 
         FOREIGN KEY ([id_servicio]) REFERENCES [dbo].[servicios]([id_servicio]);
-    PRINT 'Campo id_servicio agregado a tabla citas';
 END
-ELSE
-    PRINT 'Campo id_servicio ya existe en tabla citas';
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[citas]') AND name = 'fecha_actualizacion')
-BEGIN
     ALTER TABLE [dbo].[citas] ADD [fecha_actualizacion] DATETIME;
-    PRINT 'Campo fecha_actualizacion agregado a tabla citas';
-END
-ELSE
-    PRINT 'Campo fecha_actualizacion ya existe en tabla citas';
 GO
 
 -- ============================================================================
--- INSERCIÓN DE DATOS DE EJEMPLO
+-- VISTAS (USANDO SQL DINÁMICO PARA EVITAR ERRORES DE LOTE)
 -- ============================================================================
 
--- Servicios de ejemplo
+-- Vista: Medicamentos con stock bajo
+IF NOT EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[vw_MedicamentosStockBajo]'))
+BEGIN
+    EXEC('CREATE VIEW [dbo].[vw_MedicamentosStockBajo] AS
+    SELECT 
+        [id_medicamento],
+        [nombre_medicamento],
+        [cantidad_stock],
+        [cantidad_minima],
+        [proveedor],
+        ([cantidad_minima] - [cantidad_stock]) AS [cantidad_faltante]
+    FROM [dbo].[medicamentos]
+    WHERE [activo] = 1 AND [cantidad_stock] <= [cantidad_minima]')
+    PRINT 'Vista vw_MedicamentosStockBajo creada';
+END
+GO
+
+-- Vista: Medicamentos próximos a vencer
+IF NOT EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[vw_MedicamentosProximosAVencer]'))
+BEGIN
+    EXEC('CREATE VIEW [dbo].[vw_MedicamentosProximosAVencer] AS
+    SELECT 
+        [id_medicamento],
+        [nombre_medicamento],
+        [cantidad_stock],
+        [fecha_vencimiento],
+        DATEDIFF(DAY, GETDATE(), [fecha_vencimiento]) AS [dias_para_vencer],
+        [proveedor]
+    FROM [dbo].[medicamentos]
+    WHERE [activo] = 1 AND [fecha_vencimiento] IS NOT NULL
+        AND [fecha_vencimiento] > GETDATE()')
+    PRINT 'Vista vw_MedicamentosProximosAVencer creada';
+END
+GO
+
+-- ============================================================================
+-- DATOS DE EJEMPLO
+-- ============================================================================
+
+-- Servicios
 IF NOT EXISTS (SELECT * FROM [dbo].[servicios] WHERE [nombre_servicio] = 'Consulta General')
 BEGIN
     INSERT INTO [dbo].[servicios] ([nombre_servicio], [descripcion], [precio], [categoria])
@@ -170,14 +167,10 @@ BEGIN
         ('Análisis de Sangre', 'Examen de laboratorio', 120.00, 'Laboratorio'),
         ('Radiografía', 'Estudio radiológico', 180.00, 'Laboratorio'),
         ('Ecografía', 'Estudio ecográfico', 220.00, 'Laboratorio');
-    
-    PRINT 'Servicios de ejemplo insertados exitosamente';
 END
-ELSE
-    PRINT 'Los servicios de ejemplo ya existen';
 GO
 
--- Medicamentos de ejemplo
+-- Medicamentos
 IF NOT EXISTS (SELECT * FROM [dbo].[medicamentos] WHERE [nombre_medicamento] = 'Amoxicilina 500mg')
 BEGIN
     INSERT INTO [dbo].[medicamentos] 
@@ -190,75 +183,7 @@ BEGIN
         ('Anestésico Local', 'Lidocaína 2%', 30, 5, 5.00, '2026-10-20', 'Laboratorio GHI'),
         ('Vitaminas Complejas', 'Complejo vitamínico inyectable', 40, 8, 3.50, '2026-09-30', 'Laboratorio JKL'),
         ('Antiinflamatorio', 'Meloxicam 5mg/ml', 25, 5, 4.20, '2026-07-15', 'Farmacéutica MNO');
-    
-    PRINT 'Medicamentos de ejemplo insertados exitosamente';
-END
-ELSE
-    PRINT 'Los medicamentos de ejemplo ya existen';
-GO
-
--- ============================================================================
--- VISTAS ÚTILES
--- ============================================================================
-
--- Vista: Medicamentos con stock bajo
-IF NOT EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[vw_MedicamentosStockBajo]'))
-BEGIN
-    CREATE VIEW [dbo].[vw_MedicamentosStockBajo] AS
-    SELECT 
-        [id_medicamento],
-        [nombre_medicamento],
-        [cantidad_stock],
-        [cantidad_minima],
-        [proveedor],
-        ([cantidad_minima] - [cantidad_stock]) AS [cantidad_faltante]
-    FROM [dbo].[medicamentos]
-    WHERE [activo] = 1 AND [cantidad_stock] <= [cantidad_minima];
-    
-    PRINT 'Vista vw_MedicamentosStockBajo creada exitosamente';
 END
 GO
 
--- Vista: Medicamentos próximos a vencer
-IF NOT EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[vw_MedicamentosProximosAVencer]'))
-BEGIN
-    CREATE VIEW [dbo].[vw_MedicamentosProximosAVencer] AS
-    SELECT 
-        [id_medicamento],
-        [nombre_medicamento],
-        [cantidad_stock],
-        [fecha_vencimiento],
-        DATEDIFF(DAY, GETDATE(), [fecha_vencimiento]) AS [dias_para_vencer],
-        [proveedor]
-    FROM [dbo].[medicamentos]
-    WHERE [activo] = 1 AND [fecha_vencimiento] IS NOT NULL
-        AND [fecha_vencimiento] > GETDATE()
-    ORDER BY [fecha_vencimiento] ASC;
-    
-    PRINT 'Vista vw_MedicamentosProximosAVencer creada exitosamente';
-END
-GO
-
--- ============================================================================
--- RESUMEN
--- ============================================================================
-PRINT '';
-PRINT '=== SCRIPT DE MEJORAS COMPLETADO EXITOSAMENTE ===';
-PRINT 'Se han creado las siguientes tablas:';
-PRINT '  - servicios';
-PRINT '  - medicamentos';
-PRINT '  - movimientos_inventario';
-PRINT '';
-PRINT 'Se han actualizado los siguientes campos en tabla citas:';
-PRINT '  - diagnostico';
-PRINT '  - tratamiento';
-PRINT '  - medicamentos';
-PRINT '  - observaciones';
-PRINT '  - id_servicio';
-PRINT '  - fecha_actualizacion';
-PRINT '';
-PRINT 'Se han creado las siguientes vistas:';
-PRINT '  - vw_MedicamentosStockBajo';
-PRINT '  - vw_MedicamentosProximosAVencer';
-PRINT '';
-PRINT '=== FIN DEL SCRIPT ===';
+PRINT '=== SCRIPT CORREGIDO Y EJECUTADO CON ÉXITO ===';
