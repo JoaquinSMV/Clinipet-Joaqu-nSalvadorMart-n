@@ -94,26 +94,64 @@ namespace Clinipet_JoaquínSalvadorMartín
             // ── Fila de tarjetas ──────────────────────────────
             TableLayoutPanel filaTarjetas = new TableLayoutPanel
             {
-                ColumnCount = 3,
+                ColumnCount = 4,
                 RowCount = 1,
                 Dock = DockStyle.Top,
                 Height = 140,
                 BackColor = Color.Transparent,
                 Margin = new Padding(0, 0, 0, 24)
             };
-            filaTarjetas.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3F));
-            filaTarjetas.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3F));
-            filaTarjetas.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.4F));
+            filaTarjetas.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            filaTarjetas.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            filaTarjetas.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            filaTarjetas.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
 
             Panel cardClientes = CrearTarjetaStat("TOTAL CLIENTES", "0", ColorTeal, "Registros activos", out lblClientes);
             Panel cardMascotas = CrearTarjetaStat("TOTAL MASCOTAS", "0", ColorAzul, "En el sistema", out lblMascotas);
             Panel cardCitas = CrearTarjetaStat("CITAS HOY", "0", ColorAmbar, "Programadas hoy", out lblCitas);
+            Panel cardRecaudado = CrearTarjetaStat("RECAUDADO", "0.00€", Color.FromArgb(108, 92, 231), "Total servicios", out lblRecaudado);
 
             filaTarjetas.Controls.Add(cardClientes, 0, 0);
             filaTarjetas.Controls.Add(cardMascotas, 1, 0);
             filaTarjetas.Controls.Add(cardCitas, 2, 0);
+            filaTarjetas.Controls.Add(cardRecaudado, 3, 0);
 
             pnlScroll.Controls.Add(filaTarjetas);
+
+            // ── Fila de Gráfica ──────────────────────────────
+            Panel pnlChart = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 300,
+                BackColor = ColorBlanco,
+                Margin = new Padding(0, 0, 0, 24),
+                Padding = new Padding(20)
+            };
+            AplicarBordeRedondeado(pnlChart);
+
+            Label lblChartTit = new Label {
+                Text = "Tendencia de Citas (Últimos Meses)",
+                Font = new Font("Segoe UI Semibold", 12F),
+                ForeColor = ColorTexto,
+                Dock = DockStyle.Top,
+                Height = 30
+            };
+            pnlChart.Controls.Add(lblChartTit);
+
+            chartCitas = new System.Windows.Forms.DataVisualization.Charting.Chart {
+                Dock = DockStyle.Fill,
+                BackColor = ColorBlanco
+            };
+            var chartArea = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            chartArea.AxisX.MajorGrid.LineColor = Color.FromArgb(240, 240, 240);
+            chartArea.AxisY.MajorGrid.LineColor = Color.FromArgb(240, 240, 240);
+            chartArea.AxisX.LabelStyle.Font = new Font("Segoe UI", 8F);
+            chartArea.AxisY.LabelStyle.Font = new Font("Segoe UI", 8F);
+            chartCitas.ChartAreas.Add(chartArea);
+            
+            pnlChart.Controls.Add(chartCitas);
+            pnlScroll.Controls.Add(pnlChart);
+            pnlChart.BringToFront();
 
             // ── Fila inferior ─────────────────────────────────
             TableLayoutPanel filaInferior = new TableLayoutPanel
@@ -354,24 +392,36 @@ namespace Clinipet_JoaquínSalvadorMartín
         {
             try
             {
-                con.Abrir();
+                GestorEstadisticas gestor = new GestorEstadisticas();
+                DataTable dt = gestor.ObtenerEstadisticasGenerales();
+                
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    DataRow row = dt.Rows[0];
+                    lblClientes.Text = row["total_clientes"].ToString();
+                    lblMascotas.Text = row["total_mascotas"].ToString();
+                    lblCitas.Text = row["citas_hoy"].ToString();
+                    lblRecaudado.Text = string.Format("{0:N2}€", row["total_recaudado"]);
+                }
 
-                int clientes = (int)new SqlCommand(
-                    "SELECT COUNT(*) FROM Clientes", con.leer).ExecuteScalar();
+                // Cargar Gráfica
+                DataTable dtCitas = gestor.ObtenerCitasPorMes();
+                if (dtCitas != null && dtCitas.Rows.Count > 0)
+                {
+                    chartCitas.Series.Clear();
+                    var serie = chartCitas.Series.Add("Citas");
+                    serie.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.SplineArea;
+                    serie.Color = Color.FromArgb(150, 0, 184, 148);
+                    serie.BorderColor = Color.FromArgb(0, 184, 148);
+                    serie.BorderWidth = 3;
 
-                int mascotas = (int)new SqlCommand(
-                    "SELECT COUNT(*) FROM Mascotas", con.leer).ExecuteScalar();
-
-                int citasHoy = (int)new SqlCommand(
-                    "SELECT COUNT(*) FROM Citas WHERE CAST(FechaHora AS DATE) = CAST(GETDATE() AS DATE)",
-                    con.leer).ExecuteScalar();
-
-                if (lblClientes != null) lblClientes.Text = clientes.ToString();
-                if (lblMascotas != null) lblMascotas.Text = mascotas.ToString();
-                if (lblCitas != null) lblCitas.Text = citasHoy.ToString();
+                    foreach (DataRow r in dtCitas.Rows)
+                    {
+                        serie.Points.AddXY(r["nombre_mes"].ToString(), r["total_citas"]);
+                    }
+                }
             }
             catch { }
-            finally { con.Cerrar(); }
         }
     }
 }

@@ -20,14 +20,14 @@ namespace Clinipet_JoaquínSalvadorMartín
             {
                 conexion.Abrir();
 
-                // Usamos los nombres reales del DataSet: ClienteID, MascotaID, CitaID, FechaHora, Motivo, Observaciones
                 string query = @"SELECT 
                     (SELECT COUNT(*) FROM Clientes) as total_clientes,
                     (SELECT COUNT(*) FROM Mascotas) as total_mascotas,
                     (SELECT COUNT(*) FROM Citas) as total_citas,
                     (SELECT COUNT(*) FROM Citas WHERE Observaciones LIKE '%Completada%') as citas_completadas,
                     (SELECT COUNT(*) FROM Citas WHERE Observaciones NOT LIKE '%Completada%' OR Observaciones IS NULL) as citas_pendientes,
-                    (SELECT COUNT(*) FROM Citas WHERE CAST(FechaHora AS DATE) = CAST(GETDATE() AS DATE)) as citas_hoy";
+                    (SELECT COUNT(*) FROM Citas WHERE CAST(FechaHora AS DATE) = CAST(GETDATE() AS DATE)) as citas_hoy,
+                    ISNULL((SELECT SUM(s.precio) FROM citas c JOIN servicios s ON c.id_servicio = s.id_servicio), 0) as total_recaudado";
 
                 SqlCommand cmd = new SqlCommand(query, conexion.leer);
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);

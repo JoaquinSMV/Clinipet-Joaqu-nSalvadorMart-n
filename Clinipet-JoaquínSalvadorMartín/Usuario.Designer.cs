@@ -36,5 +36,7 @@
         public System.Windows.Forms.Label lblClientes;
         public System.Windows.Forms.Label lblMascotas;
         public System.Windows.Forms.Label lblCitas;
+        public System.Windows.Forms.Label lblRecaudado;
+        public System.Windows.Forms.DataVisualization.Charting.Chart chartCitas;
     }
 }
