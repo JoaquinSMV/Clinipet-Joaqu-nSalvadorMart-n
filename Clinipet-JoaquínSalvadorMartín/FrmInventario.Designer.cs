@@ -21,7 +21,8 @@ namespace Clinipet_JoaquínSalvadorMartín
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1339, 744);
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Name = "FrmInventario";
             this.Text = "FrmInventario";
             this.ResumeLayout(false);

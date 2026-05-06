@@ -9,11 +9,37 @@ namespace Clinipet_JoaquínSalvadorMartín
     {
         private bool cargando = true;
 
+        private GestorPDF gestorPDF;
+
         public FrmCitas()
         {
             InitializeComponent();
             this.DoubleBuffered = true;
+            gestorPDF = new GestorPDF();
             AplicarEstilosModernos();
+            AñadirBotonPDF();
+        }
+
+        private void AñadirBotonPDF()
+        {
+            Button btnPDF = new Button();
+            DiseñarBoton(btnPDF, Color.FromArgb(231, 76, 60), "  📄  Generar PDF");
+            btnPDF.Location = new Point(EliminarCita.Right + 15, 45);
+            btnPDF.Click += (s, e) => {
+                if (dgvCitas.CurrentRow != null) {
+                    DataRowView row = (DataRowView)dgvCitas.CurrentRow.DataBoundItem;
+                    int citaId = Convert.ToInt32(row["CitaID"]);
+                    string mascota = row["MascotaID"].ToString();
+                    string fecha = row["FechaHora"].ToString();
+                    string motivo = row["Motivo"].ToString();
+                    
+                    string path = gestorPDF.GenerarReporteCita(citaId, mascota, fecha, motivo, "Diagnóstico General", "Tratamiento sugerido");
+                    MessageBox.Show("PDF generado con éxito en: " + path);
+                } else {
+                    MessageBox.Show("Por favor, selecciona una cita primero.");
+                }
+            };
+            this.Controls.Add(btnPDF);
         }
 
         private void AplicarEstilosModernos()
