@@ -61,7 +61,7 @@ namespace Clinipet_JoaquínSalvadorMartín
                     )
                     SELECT 
                         UPPER(LEFT(FORMAT(m.Fecha, 'MMMM', 'es-ES'), 1)) + SUBSTRING(FORMAT(m.Fecha, 'MMMM', 'es-ES'), 2, 20) as nombre_mes,
-                        COUNT(c.id_cita) as total_citas,
+                        COUNT(c.CitaID) as total_citas,
                         MONTH(m.Fecha) as mes_num,
                         YEAR(m.Fecha) as anio
                     FROM Meses m
