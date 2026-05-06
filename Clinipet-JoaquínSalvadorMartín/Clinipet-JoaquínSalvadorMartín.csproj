@@ -93,7 +93,13 @@
     <Compile Include="FrmInventario.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FrmNuevoProducto.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FrmServicios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmNuevoServicio.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FrmReportes.cs">
