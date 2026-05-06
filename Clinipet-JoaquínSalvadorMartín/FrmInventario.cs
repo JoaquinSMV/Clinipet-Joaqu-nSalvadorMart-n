@@ -247,23 +247,39 @@ namespace Clinipet_JoaquínSalvadorMartín
 
             DataGridViewRow row = dgvProductos.SelectedRows[0];
             
-            // Obtener el ID del producto (asumiendo que está en la primera columna o en un tag)
+            // Obtener el ID del producto desde la columna correspondiente
             int idProducto = 0;
-            if (int.TryParse(row.Cells[0].Value?.ToString(), out int id))
+            if (row.Cells.Contains("id_medicamento") && row.Cells["id_medicamento"].Value != null)
+                idProducto = Convert.ToInt32(row.Cells["id_medicamento"].Value);
+            else if (int.TryParse(row.Cells[0].Value?.ToString(), out int id))
                 idProducto = id;
-            else
-                idProducto = dgvProductos.SelectedRows[0].Index + 1; // Fallback
 
             using (FrmNuevoProducto frm = new FrmNuevoProducto())
             {
                 frm.Text = "Editar Producto";
-                frm.NombreProducto = row.Cells[0].Value?.ToString() ?? "";
-                frm.Descripcion = row.Cells[1].Value?.ToString() ?? "";
-                frm.Cantidad = int.TryParse(row.Cells[2].Value?.ToString(), out int cant) ? cant : 0;
-                frm.CantidadMinima = int.TryParse(row.Cells[3].Value?.ToString(), out int cantMin) ? cantMin : 0;
-                frm.Precio = decimal.TryParse(row.Cells[4].Value?.ToString(), out decimal precio) ? precio : 0;
-                frm.Proveedor = row.Cells[5].Value?.ToString() ?? "";
-                frm.Activo = row.Cells[6].Value?.ToString() == "Sí" || row.Cells[6].Value?.ToString() == "true";
+                
+                // Usar nombres de columna si están disponibles, de lo contrario usar índices corregidos
+                if (row.Cells.Contains("nombre_medicamento"))
+                {
+                    frm.NombreProducto = row.Cells["nombre_medicamento"].Value?.ToString() ?? "";
+                    frm.Descripcion = row.Cells["descripcion"].Value?.ToString() ?? "";
+                    frm.Cantidad = Convert.ToInt32(row.Cells["cantidad_stock"].Value ?? 0);
+                    frm.CantidadMinima = Convert.ToInt32(row.Cells["cantidad_minima"].Value ?? 0);
+                    frm.Precio = Convert.ToDecimal(row.Cells["precio_unitario"].Value ?? 0);
+                    frm.Proveedor = row.Cells["proveedor"].Value?.ToString() ?? "";
+                    frm.Activo = row.Cells["activo"].Value?.ToString() == "Sí" || row.Cells["activo"].Value?.ToString() == "True" || (row.Cells["activo"].Value is bool b && b);
+                }
+                else
+                {
+                    // Fallback a índices corregidos (0=ID, 1=Nombre, 2=Desc, 3=Stock, 4=Min, 5=Precio, 6=Venc, 7=Prov, 8=Activo)
+                    frm.NombreProducto = row.Cells[1].Value?.ToString() ?? "";
+                    frm.Descripcion = row.Cells[2].Value?.ToString() ?? "";
+                    frm.Cantidad = int.TryParse(row.Cells[3].Value?.ToString(), out int cant) ? cant : 0;
+                    frm.CantidadMinima = int.TryParse(row.Cells[4].Value?.ToString(), out int cantMin) ? cantMin : 0;
+                    frm.Precio = decimal.TryParse(row.Cells[5].Value?.ToString(), out decimal precio) ? precio : 0;
+                    frm.Proveedor = row.Cells[7].Value?.ToString() ?? "";
+                    frm.Activo = row.Cells[8].Value?.ToString() == "Sí" || row.Cells[8].Value?.ToString() == "true";
+                }
 
                 if (frm.ShowDialog() == DialogResult.OK)
                 {

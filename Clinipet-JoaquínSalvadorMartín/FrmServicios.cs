@@ -206,19 +206,32 @@ namespace Clinipet_JoaquínSalvadorMartín
             DataGridViewRow row = dgvServicios.SelectedRows[0];
             
             int idServicio = 0;
-            if (int.TryParse(row.Cells[0].Value?.ToString(), out int id))
+            if (row.Cells.Contains("id_servicio") && row.Cells["id_servicio"].Value != null)
+                idServicio = Convert.ToInt32(row.Cells["id_servicio"].Value);
+            else if (int.TryParse(row.Cells[0].Value?.ToString(), out int id))
                 idServicio = id;
-            else
-                idServicio = dgvServicios.SelectedRows[0].Index + 1;
 
             using (FrmNuevoServicio frm = new FrmNuevoServicio())
             {
                 frm.Text = "Editar Servicio";
-                frm.NombreServicio = row.Cells[0].Value?.ToString() ?? "";
-                frm.Descripcion = row.Cells[1].Value?.ToString() ?? "";
-                frm.Precio = decimal.TryParse(row.Cells[2].Value?.ToString(), out decimal precio) ? precio : 0;
-                frm.Categoria = row.Cells[3].Value?.ToString() ?? "Consulta";
-                frm.Activo = row.Cells[4].Value?.ToString() == "Sí" || row.Cells[4].Value?.ToString() == "true";
+                
+                if (row.Cells.Contains("nombre_servicio"))
+                {
+                    frm.NombreServicio = row.Cells["nombre_servicio"].Value?.ToString() ?? "";
+                    frm.Descripcion = row.Cells["descripcion"].Value?.ToString() ?? "";
+                    frm.Precio = Convert.ToDecimal(row.Cells["precio"].Value ?? 0);
+                    frm.Categoria = row.Cells["categoria"].Value?.ToString() ?? "Consulta";
+                    frm.Activo = row.Cells["activo"].Value?.ToString() == "Sí" || row.Cells["activo"].Value?.ToString() == "True" || (row.Cells["activo"].Value is bool b && b);
+                }
+                else
+                {
+                    // Fallback a índices corregidos (0=ID, 1=Nombre, 2=Desc, 3=Precio, 4=Cat, 5=Activo)
+                    frm.NombreServicio = row.Cells[1].Value?.ToString() ?? "";
+                    frm.Descripcion = row.Cells[2].Value?.ToString() ?? "";
+                    frm.Precio = decimal.TryParse(row.Cells[3].Value?.ToString(), out decimal precio) ? precio : 0;
+                    frm.Categoria = row.Cells[4].Value?.ToString() ?? "Consulta";
+                    frm.Activo = row.Cells[5].Value?.ToString() == "Sí" || row.Cells[5].Value?.ToString() == "true";
+                }
 
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
