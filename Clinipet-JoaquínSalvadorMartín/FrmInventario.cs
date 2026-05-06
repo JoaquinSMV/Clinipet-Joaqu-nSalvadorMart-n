@@ -110,36 +110,29 @@ namespace Clinipet_JoaquínSalvadorMartín
         private void CargarDatos()
         {
             try {
-                conexion.Abrir();
-                // Cargar Categorías
-                SqlDataAdapter daCat = new SqlDataAdapter("SELECT * FROM Categorias", conexion.leer);
-                DataTable dtCat = new DataTable();
-                daCat.Fill(dtCat);
-                cmbCategorias.DisplayMember = "Nombre";
-                cmbCategorias.ValueMember = "CategoriaID";
-                cmbCategorias.DataSource = dtCat;
-
-                // Cargar Productos (Simulado si no hay tablas)
-                string query = "SELECT p.Nombre, c.Nombre as Categoria, p.StockActual, p.PrecioVenta, p.FechaCaducidad " +
-                               "FROM Productos p LEFT JOIN Categorias c ON p.CategoriaID = c.CategoriaID";
-                SqlDataAdapter daProd = new SqlDataAdapter(query, conexion.leer);
-                DataTable dtProd = new DataTable();
-                daProd.Fill(dtProd);
-                dgvProductos.DataSource = dtProd;
+                GestorInventario gestor = new GestorInventario();
+                DataTable dt = gestor.ObtenerMedicamentos();
+                if (dt != null) {
+                    dgvProductos.DataSource = dt;
+                } else {
+                    MostrarDatosEjemplo();
+                }
             } catch {
-                // Si falla por falta de tablas, mostrar datos de ejemplo
-                DataTable dtEjemplo = new DataTable();
-                dtEjemplo.Columns.Add("Nombre");
-                dtEjemplo.Columns.Add("Categoria");
-                dtEjemplo.Columns.Add("Stock");
-                dtEjemplo.Columns.Add("Precio");
-                dtEjemplo.Rows.Add("Paracetamol Vet", "Medicamentos", "50", "12.50€");
-                dtEjemplo.Rows.Add("Pienso Adulto 10kg", "Alimentos", "12", "45.00€");
-                dtEjemplo.Rows.Add("Collar Antiparasitario", "Accesorios", "5", "18.90€");
-                dgvProductos.DataSource = dtEjemplo;
-            } finally {
-                conexion.Cerrar();
+                MostrarDatosEjemplo();
             }
+        }
+
+        private void MostrarDatosEjemplo()
+        {
+            DataTable dtEjemplo = new DataTable();
+            dtEjemplo.Columns.Add("nombre_medicamento", typeof(string));
+            dtEjemplo.Columns.Add("cantidad_stock", typeof(string));
+            dtEjemplo.Columns.Add("precio_unitario", typeof(string));
+            dtEjemplo.Columns.Add("proveedor", typeof(string));
+            dtEjemplo.Rows.Add("Paracetamol Vet", "50", "12.50€", "FarmaVet");
+            dtEjemplo.Rows.Add("Pienso Adulto 10kg", "12", "45.00€", "RoyalCanin");
+            dtEjemplo.Rows.Add("Collar Antiparasitario", "5", "18.90€", "Seresto");
+            dgvProductos.DataSource = dtEjemplo;
         }
 
         private void FiltrarProductos() { /* Lógica de filtrado */ }

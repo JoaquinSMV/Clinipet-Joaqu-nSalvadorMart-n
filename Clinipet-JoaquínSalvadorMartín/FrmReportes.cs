@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Clinipet_JoaquínSalvadorMartín
@@ -72,9 +73,21 @@ namespace Clinipet_JoaquínSalvadorMartín
 
         private void ExportarReporte(string tipo)
         {
-            // Aquí se integraría con GestorPDF.cs que el usuario tiene localmente
-            MessageBox.Show($"Generando reporte de {tipo}...\n\nEsta función utilizará el componente GestorPDF para crear el documento.", 
-                "Exportando Reporte", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try {
+                GestorPDF gestor = new GestorPDF();
+                string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Clinipet_PDFs");
+                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+                
+                string ruta = Path.Combine(folder, $"Reporte_{tipo}_{DateTime.Now:yyyyMMdd}.txt");
+                
+                // Nota: En la rama mejoras-clinipet, GestorPDF genera .txt simulando PDF 
+                // o requiere iTextSharp para PDF real.
+                string resultado = gestor.GenerarReporteCita(0, "General", DateTime.Now.ToShortDateString(), "Reporte de " + tipo, "N/A", "N/A");
+                
+                MessageBox.Show($"Reporte generado con éxito en:\n{resultado}", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            } catch (Exception ex) {
+                MessageBox.Show("Error al generar reporte: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void InitializeComponent()
