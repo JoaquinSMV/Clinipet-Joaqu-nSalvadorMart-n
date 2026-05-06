@@ -76,16 +76,28 @@ namespace Clinipet_JoaquínSalvadorMartín
                 Dock = DockStyle.Fill,
                 BackgroundColor = Color.White,
                 BorderStyle = BorderStyle.None,
+                CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal,
+                GridColor = Color.FromArgb(230, 230, 230),
                 RowHeadersVisible = false,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 AllowUserToAddRows = false,
+                AllowUserToResizeRows = false,
                 EnableHeadersVisualStyles = false,
+                ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                RowTemplate = { Height = 40 }
+                RowTemplate = { Height = 50 }
             };
-            dgvProductos.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(248, 249, 250);
+            
+            // Cabeceras
             dgvProductos.ColumnHeadersHeight = 45;
+            dgvProductos.ColumnHeadersDefaultCellStyle.BackColor = Color.White;
+            dgvProductos.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(100, 110, 120);
             dgvProductos.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 10F);
+            dgvProductos.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.White;
+
+            // Filas
+            dgvProductos.DefaultCellStyle.SelectionBackColor = Color.FromArgb(235, 247, 245);
+            dgvProductos.DefaultCellStyle.SelectionForeColor = Color.FromArgb(0, 150, 136);
             
             this.Controls.Add(dgvProductos);
             dgvProductos.BringToFront();

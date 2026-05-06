@@ -22,6 +22,9 @@
             this.button3 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
+            this.btnInventario = new System.Windows.Forms.Button();
+            this.btnServicios = new System.Windows.Forms.Button();
+            this.btnReportes = new System.Windows.Forms.Button();
             this.pnlSidebar = new System.Windows.Forms.Panel();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.pnlContenedor = new System.Windows.Forms.Panel();
@@ -101,9 +104,57 @@
             this.button4.Text = "🏠 Inicio / Usuario";
             this.button4.UseVisualStyleBackColor = false;
             // 
+            // btnInventario
+            // 
+            this.btnInventario.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnInventario.FlatAppearance.BorderSize = 0;
+            this.btnInventario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnInventario.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.btnInventario.ForeColor = System.Drawing.Color.White;
+            this.btnInventario.Location = new System.Drawing.Point(0, 240);
+            this.btnInventario.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnInventario.Name = "btnInventario";
+            this.btnInventario.Size = new System.Drawing.Size(220, 60);
+            this.btnInventario.TabIndex = 8;
+            this.btnInventario.Text = "📦 Inventario";
+            this.btnInventario.UseVisualStyleBackColor = true;
+            // 
+            // btnServicios
+            // 
+            this.btnServicios.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnServicios.FlatAppearance.BorderSize = 0;
+            this.btnServicios.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnServicios.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.btnServicios.ForeColor = System.Drawing.Color.White;
+            this.btnServicios.Location = new System.Drawing.Point(0, 300);
+            this.btnServicios.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnServicios.Name = "btnServicios";
+            this.btnServicios.Size = new System.Drawing.Size(220, 60);
+            this.btnServicios.TabIndex = 9;
+            this.btnServicios.Text = "🛠️ Servicios";
+            this.btnServicios.UseVisualStyleBackColor = true;
+            // 
+            // btnReportes
+            // 
+            this.btnReportes.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnReportes.FlatAppearance.BorderSize = 0;
+            this.btnReportes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnReportes.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.btnReportes.ForeColor = System.Drawing.Color.White;
+            this.btnReportes.Location = new System.Drawing.Point(0, 360);
+            this.btnReportes.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnReportes.Name = "btnReportes";
+            this.btnReportes.Size = new System.Drawing.Size(220, 60);
+            this.btnReportes.TabIndex = 10;
+            this.btnReportes.Text = "📊 Reportes";
+            this.btnReportes.UseVisualStyleBackColor = true;
+            // 
             // pnlSidebar
             // 
             this.pnlSidebar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(53)))), ((int)(((byte)(65)))));
+            this.pnlSidebar.Controls.Add(this.btnReportes);
+            this.pnlSidebar.Controls.Add(this.btnServicios);
+            this.pnlSidebar.Controls.Add(this.btnInventario);
             this.pnlSidebar.Controls.Add(this.button3);
             this.pnlSidebar.Controls.Add(this.button2);
             this.pnlSidebar.Controls.Add(this.button1);
@@ -163,6 +214,9 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button btnInventario;
+        private System.Windows.Forms.Button btnServicios;
+        private System.Windows.Forms.Button btnReportes;
         private System.Windows.Forms.Panel pnlSidebar;
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Panel pnlContenedor;

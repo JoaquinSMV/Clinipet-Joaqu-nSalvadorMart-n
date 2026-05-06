@@ -15,6 +15,9 @@ namespace Clinipet_JoaquínSalvadorMartín
             this.button2.Click += new EventHandler(btnMascotas_Click);
             this.button3.Click += new EventHandler(btnCitas_Click);
             this.button4.Click += new EventHandler(btnInicio_Click);
+            this.btnInventario.Click += new EventHandler(btnInventario_Click);
+            this.btnServicios.Click += new EventHandler(btnServicios_Click);
+            this.btnReportes.Click += new EventHandler(btnReportes_Click);
 
             btnInicio_Click(null, null);
         }
@@ -59,37 +62,52 @@ namespace Clinipet_JoaquínSalvadorMartín
                 switch (destino)
                 {
                     case "clientes":
-                        AbrirFormularioHijo(new FrmClientes());
+                        btnClientes_Click(null, null);
                         break;
                     case "mascotas":
-                        AbrirFormularioHijo(new FrmMascotas(""));
+                        btnMascotas_Click(null, null);
                         break;
                     case "citas":
-                        AbrirFormularioHijo(new FrmCitas());
+                        btnCitas_Click(null, null);
                         break;
                     case "nuevo":
                         var frmCliente = new Agregar_cliente();
                         if (frmCliente.ShowDialog() == DialogResult.OK)
-                            AbrirFormularioHijo(new FrmClientes());
+                            btnClientes_Click(null, null);
                         break;
                     case "nueva_cita":
                         var frmCita = new FrmGestionCita();
                         if (frmCita.ShowDialog() == DialogResult.OK)
-                            AbrirFormularioHijo(new FrmCitas());
+                            btnCitas_Click(null, null);
                         break;
                     case "inventario":
-                        AbrirFormularioHijo(new FrmInventario());
+                        btnInventario_Click(null, null);
                         break;
                     case "servicios":
-                        AbrirFormularioHijo(new FrmServicios());
+                        btnServicios_Click(null, null);
                         break;
                     case "reportes":
-                        AbrirFormularioHijo(new FrmReportes());
+                        btnReportes_Click(null, null);
                         break;
                 }
             };
 
             AbrirFormularioHijo(panelUsuario);
+        }
+
+        private void btnInventario_Click(object sender, EventArgs e)
+        {
+            AbrirFormularioHijo(new FrmInventario());
+        }
+
+        private void btnServicios_Click(object sender, EventArgs e)
+        {
+            AbrirFormularioHijo(new FrmServicios());
+        }
+
+        private void btnReportes_Click(object sender, EventArgs e)
+        {
+            AbrirFormularioHijo(new FrmReportes());
         }
     }
 }
