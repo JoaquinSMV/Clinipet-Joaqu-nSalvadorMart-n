@@ -285,20 +285,23 @@ namespace Clinipet_JoaquínSalvadorMartín
             TableLayoutPanel grid = new TableLayoutPanel
             {
                 ColumnCount = 2,
-                RowCount = 2,
+                RowCount = 3,
                 Dock = DockStyle.Fill,
                 BackColor = Color.Transparent,
                 Padding = new Padding(0, 8, 0, 0)
             };
             grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            grid.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            grid.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            grid.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33F));
+            grid.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33F));
+            grid.RowStyles.Add(new RowStyle(SizeType.Percent, 33.34F));
 
-            grid.Controls.Add(CrearBotonAcceso("👥  Ver Clientes", ColorTeal, Color.FromArgb(230, 252, 245), "clientes"), 0, 0);
-            grid.Controls.Add(CrearBotonAcceso("🐾  Ver Mascotas", ColorAzul, Color.FromArgb(230, 244, 253), "mascotas"), 1, 0);
-            grid.Controls.Add(CrearBotonAcceso("📅  Ver Citas", Color.FromArgb(124, 77, 255), Color.FromArgb(240, 235, 255), "citas"), 0, 1);
-            grid.Controls.Add(CrearBotonAcceso("➕  Nuevo Cliente", ColorAmbar, Color.FromArgb(255, 248, 225), "nuevo"), 1, 1);
+            grid.Controls.Add(CrearBotonAcceso("👥  Clientes", ColorTeal, Color.FromArgb(230, 252, 245), "clientes"), 0, 0);
+            grid.Controls.Add(CrearBotonAcceso("🐾  Mascotas", ColorAzul, Color.FromArgb(230, 244, 253), "mascotas"), 1, 0);
+            grid.Controls.Add(CrearBotonAcceso("📅  Citas", Color.FromArgb(124, 77, 255), Color.FromArgb(240, 235, 255), "citas"), 0, 1);
+            grid.Controls.Add(CrearBotonAcceso("➕  Nueva Cita", ColorAmbar, Color.FromArgb(255, 248, 225), "nueva_cita"), 1, 1);
+            grid.Controls.Add(CrearBotonAcceso("📦  Inventario", Color.FromArgb(255, 118, 117), Color.FromArgb(255, 235, 235), "inventario"), 0, 2);
+            grid.Controls.Add(CrearBotonAcceso("📊  Reportes", Color.FromArgb(108, 117, 125), Color.FromArgb(245, 245, 245), "reportes"), 1, 2);
 
             card.Controls.Add(grid);
             card.Controls.Add(lblTitAccesos);

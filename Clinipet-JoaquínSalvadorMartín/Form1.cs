@@ -68,9 +68,23 @@ namespace Clinipet_JoaquínSalvadorMartín
                         AbrirFormularioHijo(new FrmCitas());
                         break;
                     case "nuevo":
-                        var frm = new Agregar_cliente();
-                        if (frm.ShowDialog() == DialogResult.OK)
+                        var frmCliente = new Agregar_cliente();
+                        if (frmCliente.ShowDialog() == DialogResult.OK)
                             AbrirFormularioHijo(new FrmClientes());
+                        break;
+                    case "nueva_cita":
+                        var frmCita = new FrmGestionCita();
+                        if (frmCita.ShowDialog() == DialogResult.OK)
+                            AbrirFormularioHijo(new FrmCitas());
+                        break;
+                    case "inventario":
+                        AbrirFormularioHijo(new FrmInventario());
+                        break;
+                    case "servicios":
+                        AbrirFormularioHijo(new FrmServicios());
+                        break;
+                    case "reportes":
+                        AbrirFormularioHijo(new FrmReportes());
                         break;
                 }
             };
