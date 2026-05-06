@@ -15,6 +15,11 @@ namespace Clinipet_JoaquínSalvadorMartín
             this.button2.Click += new EventHandler(btnMascotas_Click);
             this.button3.Click += new EventHandler(btnCitas_Click);
             this.button4.Click += new EventHandler(btnInicio_Click);
+            
+            // Nuevos botones para mejoras
+            this.btnInventario.Click += new EventHandler(btnInventario_Click);
+            this.btnServicios.Click += new EventHandler(btnServicios_Click);
+            this.btnEstadisticas.Click += new EventHandler(btnEstadisticas_Click);
 
             btnInicio_Click(null, null);
         }
@@ -51,6 +56,21 @@ namespace Clinipet_JoaquínSalvadorMartín
         }
 
         private void btnInicio_Click(object sender, EventArgs e)
+        {
+            AbrirFormularioHijo(new FrmDashboard());
+        }
+
+        private void btnInventario_Click(object sender, EventArgs e)
+        {
+            AbrirFormularioHijo(new FrmInventario());
+        }
+
+        private void btnServicios_Click(object sender, EventArgs e)
+        {
+            AbrirFormularioHijo(new FrmServicios());
+        }
+
+        private void btnEstadisticas_Click(object sender, EventArgs e)
         {
             var panelUsuario = new Usuario();
 
