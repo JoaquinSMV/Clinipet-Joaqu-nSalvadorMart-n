@@ -22,11 +22,11 @@ namespace Clinipet_JoaquínSalvadorMartín
 
                 string query = @"
                     SELECT 
-                        (SELECT COUNT(*) FROM Clientes WHERE activo = 1) as total_clientes,
-                        (SELECT COUNT(*) FROM Mascotas WHERE activo = 1) as total_mascotas,
+                        (SELECT COUNT(*) FROM Clientes) as total_clientes,
+                        (SELECT COUNT(*) FROM Mascotas) as total_mascotas,
                         (SELECT COUNT(*) FROM Citas) as total_citas,
                         (SELECT COUNT(*) FROM Citas WHERE CAST(FechaHora AS DATE) = CAST(GETDATE() AS DATE)) as citas_hoy,
-                        ISNULL((SELECT SUM(CAST(precio AS DECIMAL(10,2))) FROM Servicios WHERE activo = 1), 0) as total_recaudado";
+                        ISNULL((SELECT SUM(CAST(precio AS DECIMAL(10,2))) FROM Servicios), 0) as total_recaudado";
 
                 SqlCommand cmd = new SqlCommand(query, conexion.leer);
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
