@@ -442,12 +442,22 @@ namespace Clinipet_JoaquínSalvadorMartín
                                 foreach (DataRow r in dtCitas.Rows)
                                 {
                                     int valor = Convert.ToInt32(r["total_citas"]);
-                                    serie.Points.AddXY(r["nombre_mes"].ToString(), valor);
+                                    int pIdx = serie.Points.AddXY(r["nombre_mes"].ToString(), valor);
+                                    
+                                    // Añadir etiquetas con el valor si es mayor que 0
+                                    if (valor > 0)
+                                    {
+                                        serie.Points[pIdx].Label = valor.ToString();
+                                        serie.Points[pIdx].MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+                                        serie.Points[pIdx].MarkerSize = 8;
+                                    }
                                 }
                                 
-                                // Asegurar que la gráfica se dibuje aunque haya pocos datos
-                                if (serie.Points.Count == 0)
-                                    serie.Points.AddXY("Sin datos", 0);
+                                // Ajustar el máximo del eje Y para que no se vea pegado arriba
+                                double max = 0;
+                                foreach (var p in serie.Points) if (p.YValues[0] > max) max = p.YValues[0];
+                                chartCitas.ChartAreas[0].AxisY.Maximum = max > 0 ? max * 1.2 : 10;
+                                chartCitas.ChartAreas[0].AxisX.Interval = 1;
                             }
                         }
                         catch { }
