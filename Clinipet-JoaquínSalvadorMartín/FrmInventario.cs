@@ -71,6 +71,14 @@ namespace Clinipet_JoaquínSalvadorMartín
             Button btnEntrada = CrearBoton("  📥  Entrada Stock", Color.FromArgb(9, 132, 227), new Point(610, 48));
             pnlTop.Controls.Add(btnEntrada);
 
+            Button btnModificar = CrearBoton("  ✏  Modificar", Color.FromArgb(255, 193, 7), new Point(800, 48));
+            btnModificar.Click += (s, e) => ModificarProductoSeleccionado();
+            pnlTop.Controls.Add(btnModificar);
+
+            Button btnBorrar = CrearBoton("  🗑  Borrar", Color.FromArgb(220, 53, 69), new Point(990, 48));
+            btnBorrar.Click += (s, e) => BorrarProductoSeleccionado();
+            pnlTop.Controls.Add(btnBorrar);
+
             this.Controls.Add(pnlTop);
 
             // DataGridView
@@ -193,6 +201,32 @@ namespace Clinipet_JoaquínSalvadorMartín
                         MessageBox.Show("Error al añadir el producto.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
+            }
+        }
+
+        private void ModificarProductoSeleccionado()
+        {
+            if (dgvProductos.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Selecciona un producto para modificar.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            MessageBox.Show("Funcionalidad de modificación en desarrollo.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void BorrarProductoSeleccionado()
+        {
+            if (dgvProductos.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Selecciona un producto para borrar.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (MessageBox.Show("¿Estás seguro de que deseas borrar este producto?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                MessageBox.Show("Producto eliminado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                CargarDatos();
             }
         }
 

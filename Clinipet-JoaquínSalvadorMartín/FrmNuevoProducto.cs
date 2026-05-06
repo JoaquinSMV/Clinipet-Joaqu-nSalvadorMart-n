@@ -13,6 +13,7 @@ namespace Clinipet_JoaquínSalvadorMartín
         private TextBox txtPrecio;
         private DateTimePicker dtpVencimiento;
         private TextBox txtProveedor;
+        private CheckBox chkActivo;
         private Button btnGuardar;
         private Button btnCancelar;
 
@@ -23,12 +24,13 @@ namespace Clinipet_JoaquínSalvadorMartín
         public decimal Precio { get; set; }
         public DateTime FechaVencimiento { get; set; }
         public string Proveedor { get; set; }
+        public bool Activo { get; set; }
 
         public FrmNuevoProducto()
         {
             this.Text = "Nuevo Producto";
             this.Width = 550;
-            this.Height = 500;
+            this.Height = 530;
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -42,7 +44,6 @@ namespace Clinipet_JoaquínSalvadorMartín
         {
             int y = 20;
             const int margenIzq = 20;
-            const int anchoLabel = 200;
             const int anchoControl = 480;
             const int espaciado = 50;
 
@@ -93,11 +94,25 @@ namespace Clinipet_JoaquínSalvadorMartín
             this.Controls.Add(txtProveedor);
             y += espaciado;
 
+            // Activo
+            chkActivo = new CheckBox
+            {
+                Text = "✓ Producto Activo",
+                Location = new Point(margenIzq, y),
+                Width = 200,
+                Height = 25,
+                Checked = true,
+                Font = new Font("Segoe UI", 10F),
+                ForeColor = Color.FromArgb(45, 52, 54)
+            };
+            this.Controls.Add(chkActivo);
+            y += 40;
+
             // Botones
             btnGuardar = new Button
             {
                 Text = "✓ Guardar",
-                Location = new Point(120, y + 10),
+                Location = new Point(120, y),
                 Width = 180,
                 Height = 40,
                 BackColor = Color.FromArgb(0, 184, 148),
@@ -113,7 +128,7 @@ namespace Clinipet_JoaquínSalvadorMartín
             btnCancelar = new Button
             {
                 Text = "✕ Cancelar",
-                Location = new Point(310, y + 10),
+                Location = new Point(310, y),
                 Width = 180,
                 Height = 40,
                 BackColor = Color.FromArgb(220, 53, 69),
@@ -160,6 +175,7 @@ namespace Clinipet_JoaquínSalvadorMartín
             Precio = precio;
             FechaVencimiento = dtpVencimiento.Value;
             Proveedor = txtProveedor.Text;
+            Activo = chkActivo.Checked;
 
             this.DialogResult = DialogResult.OK;
             this.Close();

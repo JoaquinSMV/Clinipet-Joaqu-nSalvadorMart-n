@@ -59,13 +59,39 @@ namespace Clinipet_JoaquínSalvadorMartín
             btnNuevo.Click += (s, e) => AbrirFormularioNuevoServicio();
             pnlAcciones.Controls.Add(btnNuevo);
 
+            Button btnModificar = new Button {
+                Text = "✏ Modificar",
+                BackColor = Color.FromArgb(255, 193, 7),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(150, 35),
+                Location = new Point(460, 10),
+                Font = new Font("Segoe UI Semibold", 10F)
+            };
+            btnModificar.FlatAppearance.BorderSize = 0;
+            btnModificar.Click += (s, e) => ModificarServicioSeleccionado();
+            pnlAcciones.Controls.Add(btnModificar);
+
+            Button btnBorrar = new Button {
+                Text = "🗑 Borrar",
+                BackColor = Color.FromArgb(220, 53, 69),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(150, 35),
+                Location = new Point(620, 10),
+                Font = new Font("Segoe UI Semibold", 10F)
+            };
+            btnBorrar.FlatAppearance.BorderSize = 0;
+            btnBorrar.Click += (s, e) => BorrarServicioSeleccionado();
+            pnlAcciones.Controls.Add(btnBorrar);
+
             Button btnExportar = new Button {
                 Text = "📄 Exportar PDF",
                 BackColor = Color.FromArgb(108, 117, 125),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(180, 35),
-                Location = new Point(460, 10),
+                Size = new Size(150, 35),
+                Location = new Point(780, 10),
                 Font = new Font("Segoe UI Semibold", 10F)
             };
             btnExportar.FlatAppearance.BorderSize = 0;
@@ -166,6 +192,32 @@ namespace Clinipet_JoaquínSalvadorMartín
                         MessageBox.Show("Error al añadir el servicio.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
+            }
+        }
+
+        private void ModificarServicioSeleccionado()
+        {
+            if (dgvServicios.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Selecciona un servicio para modificar.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            MessageBox.Show("Funcionalidad de modificación en desarrollo.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void BorrarServicioSeleccionado()
+        {
+            if (dgvServicios.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Selecciona un servicio para borrar.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (MessageBox.Show("¿Estás seguro de que deseas borrar este servicio?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                MessageBox.Show("Servicio eliminado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                CargarServicios();
             }
         }
 

@@ -10,6 +10,7 @@ namespace Clinipet_JoaquínSalvadorMartín
         private TextBox txtDescripcion;
         private TextBox txtPrecio;
         private ComboBox cmbCategoria;
+        private CheckBox chkActivo;
         private Button btnGuardar;
         private Button btnCancelar;
 
@@ -17,12 +18,13 @@ namespace Clinipet_JoaquínSalvadorMartín
         public string Descripcion { get; set; }
         public decimal Precio { get; set; }
         public string Categoria { get; set; }
+        public bool Activo { get; set; }
 
         public FrmNuevoServicio()
         {
             this.Text = "Nuevo Servicio";
             this.Width = 550;
-            this.Height = 420;
+            this.Height = 460;
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -75,11 +77,25 @@ namespace Clinipet_JoaquínSalvadorMartín
             this.Controls.Add(txtPrecio);
             y += espaciado;
 
+            // Activo
+            chkActivo = new CheckBox
+            {
+                Text = "✓ Servicio Activo",
+                Location = new Point(margenIzq, y),
+                Width = 200,
+                Height = 25,
+                Checked = true,
+                Font = new Font("Segoe UI", 10F),
+                ForeColor = Color.FromArgb(45, 52, 54)
+            };
+            this.Controls.Add(chkActivo);
+            y += 40;
+
             // Botones
             btnGuardar = new Button
             {
                 Text = "✓ Guardar",
-                Location = new Point(120, y + 10),
+                Location = new Point(120, y),
                 Width = 180,
                 Height = 40,
                 BackColor = Color.FromArgb(0, 184, 148),
@@ -95,7 +111,7 @@ namespace Clinipet_JoaquínSalvadorMartín
             btnCancelar = new Button
             {
                 Text = "✕ Cancelar",
-                Location = new Point(310, y + 10),
+                Location = new Point(310, y),
                 Width = 180,
                 Height = 40,
                 BackColor = Color.FromArgb(220, 53, 69),
@@ -127,6 +143,7 @@ namespace Clinipet_JoaquínSalvadorMartín
             Descripcion = txtDescripcion.Text;
             Precio = precio;
             Categoria = cmbCategoria.SelectedItem?.ToString() ?? "Consulta";
+            Activo = chkActivo.Checked;
 
             this.DialogResult = DialogResult.OK;
             this.Close();
