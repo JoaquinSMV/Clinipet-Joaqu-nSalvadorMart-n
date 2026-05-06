@@ -18,6 +18,7 @@ namespace Clinipet_JoaquínSalvadorMartín
         private DataGridView dgvServicios;
         private GestorServicios gestor;
 
+        private TextBox txtBuscar;
         private void ConfigurarUI()
         {
             gestor = new GestorServicios();
@@ -37,17 +38,38 @@ namespace Clinipet_JoaquínSalvadorMartín
             // Panel de Acciones
             Panel pnlAcciones = new Panel { Dock = DockStyle.Top, Height = 60, Padding = new Padding(0, 10, 0, 10) };
             
+            txtBuscar = new TextBox { 
+                Size = new Size(250, 35), 
+                Location = new Point(0, 12),
+                Font = new Font("Segoe UI", 11F)
+            };
+            txtBuscar.TextChanged += (s, e) => FiltrarServicios();
+            pnlAcciones.Controls.Add(txtBuscar);
+
             Button btnNuevo = new Button {
                 Text = "➕ Nuevo Servicio",
                 BackColor = Color.FromArgb(9, 132, 227),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(180, 35),
-                Location = new Point(0, 10),
+                Location = new Point(270, 10),
                 Font = new Font("Segoe UI Semibold", 10F)
             };
             btnNuevo.FlatAppearance.BorderSize = 0;
             pnlAcciones.Controls.Add(btnNuevo);
+
+            Button btnExportar = new Button {
+                Text = "📄 Exportar PDF",
+                BackColor = Color.FromArgb(108, 117, 125),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(180, 35),
+                Location = new Point(460, 10),
+                Font = new Font("Segoe UI Semibold", 10F)
+            };
+            btnExportar.FlatAppearance.BorderSize = 0;
+            btnExportar.Click += (s, e) => ExportarServicios();
+            pnlAcciones.Controls.Add(btnExportar);
 
             this.Controls.Add(pnlAcciones);
 
@@ -98,6 +120,25 @@ namespace Clinipet_JoaquínSalvadorMartín
                 }
             } catch {
                 CargarDatosEjemplo();
+            }
+        }
+
+        private void FiltrarServicios()
+        {
+            if (dgvServicios.DataSource is DataTable dt)
+            {
+                string filtro = txtBuscar.Text.Trim().Replace("'", "''");
+                dt.DefaultView.RowFilter = string.Format("nombre_servicio LIKE '%{0}%' OR categoria LIKE '%{0}%'", filtro);
+            }
+        }
+
+        private void ExportarServicios()
+        {
+            if (dgvServicios.DataSource is DataTable dt)
+            {
+                GestorPDF pdf = new GestorPDF();
+                string path = pdf.ExportarTablaATexto(dt, "Catálogo de Servicios");
+                MessageBox.Show("Reporte generado en: " + path, "Exportación Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 

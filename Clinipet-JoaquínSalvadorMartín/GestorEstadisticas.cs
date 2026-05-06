@@ -52,60 +52,33 @@ namespace Clinipet_JoaquínSalvadorMartín
             try
             {
                 conexion.Abrir();
-                string query = @"SELECT 
-                    YEAR(FechaHora) as año,
-                    MONTH(FechaHora) as mes,
-                    DATENAME(MONTH, FechaHora) as nombre_mes,
-                    COUNT(*) as total_citas
+
+                string query = @"
+                    SELECT 
+                        FORMAT(FechaHora, 'MMMM', 'es-ES') as nombre_mes,
+                        COUNT(*) as total_citas,
+                        MONTH(FechaHora) as mes_num
                     FROM Citas
-                    WHERE FechaHora >= DATEADD(MONTH, -12, GETDATE())
-                    GROUP BY YEAR(FechaHora), MONTH(FechaHora), DATENAME(MONTH, FechaHora)
-                    ORDER BY año DESC, mes DESC";
+                    WHERE FechaHora >= DATEADD(MONTH, -6, GETDATE())
+                    GROUP BY FORMAT(FechaHora, 'MMMM', 'es-ES'), MONTH(FechaHora)
+                    ORDER BY mes_num";
 
                 SqlCommand cmd = new SqlCommand(query, conexion.leer);
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 adapter.Fill(dt);
+
                 return dt;
             }
-            catch { return null; }
-            finally { conexion.Cerrar(); }
-        }
-
-        public DataTable ObtenerMascotasPorEspecie()
-        {
-            try
+            catch (Exception ex)
             {
-                conexion.Abrir();
-                string query = @"SELECT Especie, COUNT(*) as cantidad FROM Mascotas GROUP BY Especie ORDER BY cantidad DESC";
-                SqlCommand cmd = new SqlCommand(query, conexion.leer);
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                DataTable dt = new DataTable();
-                adapter.Fill(dt);
-                return dt;
+                MessageBox.Show("Error al obtener citas por mes: " + ex.Message);
+                return null;
             }
-            catch { return null; }
-            finally { conexion.Cerrar(); }
-        }
-
-        public DataTable ObtenerClientesMasActivos(int limite = 10)
-        {
-            try
+            finally
             {
-                conexion.Abrir();
-                string query = $@"SELECT TOP ({limite}) c.Nombre, c.Apellidos, COUNT(cit.CitaID) as total_citas
-                    FROM Clientes c
-                    LEFT JOIN Citas cit ON c.ClienteID = cit.ClienteID
-                    GROUP BY c.ClienteID, c.Nombre, c.Apellidos
-                    ORDER BY total_citas DESC";
-                SqlCommand cmd = new SqlCommand(query, conexion.leer);
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                DataTable dt = new DataTable();
-                adapter.Fill(dt);
-                return dt;
+                conexion.Cerrar();
             }
-            catch { return null; }
-            finally { conexion.Cerrar(); }
         }
     }
 }

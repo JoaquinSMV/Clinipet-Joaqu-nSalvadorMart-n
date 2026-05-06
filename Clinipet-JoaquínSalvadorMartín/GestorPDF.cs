@@ -60,5 +60,56 @@ Gracias por confiar en Clinipet.
             // Método mantenido para compatibilidad
             return true;
         }
+
+        public string ExportarTablaATexto(DataTable dt, string titulo)
+        {
+            try
+            {
+                string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Clinipet_Reportes");
+                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+
+                string fileName = $"{titulo.Replace(" ", "_")}_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+                string path = Path.Combine(folder, fileName);
+
+                using (StreamWriter sw = new StreamWriter(path))
+                {
+                    sw.WriteLine("==================================================");
+                    sw.WriteLine($"        CLINIPET - {titulo.ToUpper()}");
+                    sw.WriteLine("==================================================");
+                    sw.WriteLine($"Fecha de generación: {DateTime.Now}");
+                    sw.WriteLine("--------------------------------------------------");
+                    sw.WriteLine();
+
+                    // Cabeceras
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        sw.Write($"{col.ColumnName,-20} ");
+                    }
+                    sw.WriteLine();
+                    sw.WriteLine(new string('-', dt.Columns.Count * 21));
+
+                    // Datos
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        foreach (var item in row.ItemArray)
+                        {
+                            sw.Write($"{item?.ToString().Replace("\n", " ").Replace("\r", ""),-20} ");
+                        }
+                        sw.WriteLine();
+                    }
+
+                    sw.WriteLine();
+                    sw.WriteLine("--------------------------------------------------");
+                    sw.WriteLine("Fin del reporte.");
+                    sw.WriteLine("==================================================");
+                }
+
+                return path;
+            }
+            catch (Exception ex)
+            {
+                return "Error: " + ex.Message;
+            }
+        }
     }
 }

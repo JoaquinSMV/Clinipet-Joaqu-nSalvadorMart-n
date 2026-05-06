@@ -22,9 +22,20 @@ namespace Clinipet_JoaquínSalvadorMartín
         private readonly Color ColorTextoSuave = Color.FromArgb(120, 130, 140);
         private readonly Color ColorBorde = Color.FromArgb(225, 228, 232);
 
+        private Timer timerActualizacion;
+
         public Usuario()
         {
             InitializeComponent();
+            ConfigurarTimer();
+        }
+
+        private void ConfigurarTimer()
+        {
+            timerActualizacion = new Timer();
+            timerActualizacion.Interval = 30000; // 30 segundos
+            timerActualizacion.Tick += (s, e) => CargarEstadisticas();
+            timerActualizacion.Start();
         }
 
         private void Usuario_Load(object sender, EventArgs e)

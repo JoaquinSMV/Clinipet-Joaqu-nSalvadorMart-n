@@ -13,6 +13,7 @@ namespace Clinipet_JoaquínSalvadorMartín
         private DataGridView dgvProductos;
         private ComboBox cmbCategorias;
         private TextBox txtBuscar;
+        private GestorInventario gestor;
 
         // Win32 API para placeholder en TextBox (.NET Framework compatible)
         private const int EM_SETCUEBANNER = 0x1501;
@@ -23,6 +24,7 @@ namespace Clinipet_JoaquínSalvadorMartín
         public FrmInventario()
         {
             InitializeComponent();
+            gestor = new GestorInventario();
             this.BackColor = Color.FromArgb(240, 242, 245);
             this.Padding = new Padding(25);
             ConfigurarUI();
@@ -122,9 +124,8 @@ namespace Clinipet_JoaquínSalvadorMartín
         private void CargarDatos()
         {
             try {
-                GestorInventario gestor = new GestorInventario();
                 DataTable dt = gestor.ObtenerMedicamentos();
-                if (dt != null) {
+                if (dt != null && dt.Rows.Count > 0) {
                     dgvProductos.DataSource = dt;
                 } else {
                     MostrarDatosEjemplo();
@@ -147,7 +148,24 @@ namespace Clinipet_JoaquínSalvadorMartín
             dgvProductos.DataSource = dtEjemplo;
         }
 
-        private void FiltrarProductos() { /* Lógica de filtrado */ }
+        private void FiltrarProductos()
+        {
+            if (dgvProductos.DataSource is DataTable dt)
+            {
+                string filtro = txtBuscar.Text.Trim().Replace("'", "''");
+                dt.DefaultView.RowFilter = string.Format("nombre_medicamento LIKE '%{0}%' OR proveedor LIKE '%{0}%'", filtro);
+            }
+        }
+
+        private void ExportarInventario()
+        {
+            if (dgvProductos.DataSource is DataTable dt)
+            {
+                GestorPDF pdf = new GestorPDF();
+                string path = pdf.ExportarTablaATexto(dt, "Inventario de Medicamentos");
+                MessageBox.Show("Reporte generado en: " + path, "Exportación Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
 
         private void InitializeComponent()
         {

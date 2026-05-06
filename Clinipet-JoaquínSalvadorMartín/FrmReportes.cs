@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -74,17 +75,39 @@ namespace Clinipet_JoaquínSalvadorMartín
         private void ExportarReporte(string tipo)
         {
             try {
-                GestorPDF gestor = new GestorPDF();
-                string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Clinipet_PDFs");
-                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-                
-                string ruta = Path.Combine(folder, $"Reporte_{tipo}_{DateTime.Now:yyyyMMdd}.txt");
-                
-                // Nota: En la rama mejoras-clinipet, GestorPDF genera .txt simulando PDF 
-                // o requiere iTextSharp para PDF real.
-                string resultado = gestor.GenerarReporteCita(0, "General", DateTime.Now.ToShortDateString(), "Reporte de " + tipo, "N/A", "N/A");
-                
-                MessageBox.Show($"Reporte generado con éxito en:\n{resultado}", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                GestorPDF gestorPdf = new GestorPDF();
+                DataTable dt = null;
+                string titulo = "";
+
+                switch (tipo)
+                {
+                    case "citas":
+                        dt = new GestorEstadisticas().ObtenerCitasPorMes();
+                        titulo = "Reporte de Citas Mensuales";
+                        break;
+                    case "finanzas":
+                        dt = new GestorServicios().ObtenerServiciosMasSolicitados();
+                        titulo = "Reporte de Ingresos por Servicios";
+                        break;
+                    case "stock":
+                        dt = new GestorInventario().ObtenerMedicamentosStockBajo();
+                        titulo = "Alerta de Stock Bajo";
+                        break;
+                    case "clientes":
+                        dt = new GestorEstadisticas().ObtenerEstadisticasGenerales();
+                        titulo = "Resumen de Actividad de Clientes";
+                        break;
+                }
+
+                if (dt != null)
+                {
+                    string resultado = gestorPdf.ExportarTablaATexto(dt, titulo);
+                    MessageBox.Show($"Reporte generado con éxito en:\n{resultado}", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("No hay datos disponibles para generar este reporte.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             } catch (Exception ex) {
                 MessageBox.Show("Error al generar reporte: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
