@@ -203,7 +203,22 @@ namespace Clinipet_JoaquínSalvadorMartín
                 return;
             }
 
-            MessageBox.Show("Funcionalidad de modificación en desarrollo.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            DataGridViewRow row = dgvServicios.SelectedRows[0];
+            using (FrmNuevoServicio frm = new FrmNuevoServicio())
+            {
+                frm.Text = "Editar Servicio";
+                frm.NombreServicio = row.Cells[0].Value?.ToString() ?? "";
+                frm.Descripcion = row.Cells[1].Value?.ToString() ?? "";
+                frm.Precio = decimal.TryParse(row.Cells[2].Value?.ToString(), out decimal precio) ? precio : 0;
+                frm.Categoria = row.Cells[3].Value?.ToString() ?? "Consulta";
+                frm.Activo = row.Cells[4].Value?.ToString() == "Sí" || row.Cells[4].Value?.ToString() == "true";
+
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    MessageBox.Show("Servicio actualizado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    CargarServicios();
+                }
+            }
         }
 
         private void BorrarServicioSeleccionado()

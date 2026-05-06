@@ -161,7 +161,25 @@ namespace Clinipet_JoaquínSalvadorMartín
             if (dgvProductos.DataSource is DataTable dt)
             {
                 string filtro = txtBuscar.Text.Trim().Replace("'", "''");
-                dt.DefaultView.RowFilter = string.Format("nombre_medicamento LIKE '%{0}%' OR proveedor LIKE '%{0}%'", filtro);
+                string categoria = cmbCategorias.SelectedItem?.ToString() ?? "Todos";
+                
+                string filtroFinal = string.Format("nombre_medicamento LIKE '%{0}%' OR proveedor LIKE '%{0}%'", filtro);
+                
+                if (categoria != "Todos")
+                {
+                    filtroFinal += string.Format(" AND categoria = '{0}'", categoria);
+                }
+                
+                dt.DefaultView.RowFilter = filtroFinal;
+            }
+            
+            // Bloquear edición de todas las celdas excepto la columna de Activo
+            if (dgvProductos.Columns.Count > 0)
+            {
+                foreach (DataGridViewColumn col in dgvProductos.Columns)
+                {
+                    col.ReadOnly = col.Name != "Activo" && col.HeaderText != "Activo";
+                }
             }
         }
 
@@ -212,7 +230,24 @@ namespace Clinipet_JoaquínSalvadorMartín
                 return;
             }
 
-            MessageBox.Show("Funcionalidad de modificación en desarrollo.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            DataGridViewRow row = dgvProductos.SelectedRows[0];
+            using (FrmNuevoProducto frm = new FrmNuevoProducto())
+            {
+                frm.Text = "Editar Producto";
+                frm.NombreProducto = row.Cells[0].Value?.ToString() ?? "";
+                frm.Descripcion = row.Cells[1].Value?.ToString() ?? "";
+                frm.Cantidad = int.TryParse(row.Cells[2].Value?.ToString(), out int cant) ? cant : 0;
+                frm.CantidadMinima = int.TryParse(row.Cells[3].Value?.ToString(), out int cantMin) ? cantMin : 0;
+                frm.Precio = decimal.TryParse(row.Cells[4].Value?.ToString(), out decimal precio) ? precio : 0;
+                frm.Proveedor = row.Cells[5].Value?.ToString() ?? "";
+                frm.Activo = row.Cells[6].Value?.ToString() == "Sí" || row.Cells[6].Value?.ToString() == "true";
+
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    MessageBox.Show("Producto actualizado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    CargarDatos();
+                }
+            }
         }
 
         private void BorrarProductoSeleccionado()

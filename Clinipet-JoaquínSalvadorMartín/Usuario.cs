@@ -427,9 +427,12 @@ namespace Clinipet_JoaquínSalvadorMartín
                     {
                         try
                         {
-                            if (chartCitas.Series != null)
+                            if (chartCitas.Series != null && chartCitas.ChartAreas.Count > 0)
                             {
                                 chartCitas.Series.Clear();
+                                chartCitas.ChartAreas[0].AxisX.LabelStyle.Angle = -45;
+                                chartCitas.ChartAreas[0].AxisY.Minimum = 0;
+                                
                                 var serie = chartCitas.Series.Add("Citas");
                                 serie.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.SplineArea;
                                 serie.Color = Color.FromArgb(150, 0, 184, 148);
@@ -438,8 +441,13 @@ namespace Clinipet_JoaquínSalvadorMartín
 
                                 foreach (DataRow r in dtCitas.Rows)
                                 {
-                                    serie.Points.AddXY(r["nombre_mes"].ToString(), r["total_citas"]);
+                                    int valor = Convert.ToInt32(r["total_citas"]);
+                                    serie.Points.AddXY(r["nombre_mes"].ToString(), valor);
                                 }
+                                
+                                // Asegurar que la gráfica se dibuje aunque haya pocos datos
+                                if (serie.Points.Count == 0)
+                                    serie.Points.AddXY("Sin datos", 0);
                             }
                         }
                         catch { }
