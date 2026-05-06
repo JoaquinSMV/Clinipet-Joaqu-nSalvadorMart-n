@@ -10,100 +10,80 @@ namespace Clinipet_JoaquínSalvadorMartín
         {
             InitializeComponent();
             this.BackColor = Color.FromArgb(240, 242, 245);
-            this.Padding = new Padding(35);
+            this.Padding = new Padding(30);
             ConfigurarUI();
         }
 
         private void ConfigurarUI()
         {
-            Label lblTitulo = new Label
-            {
-                Text = "Informes y Reportes",
-                Font = new Font("Segoe UI Semibold", 20F),
+            Label lblTitulo = new Label { 
+                Text = "Centro de Reportes y Estadísticas", 
+                Font = new Font("Segoe UI Semibold", 20F), 
                 ForeColor = Color.FromArgb(45, 52, 54),
                 Dock = DockStyle.Top,
-                Height = 50
+                Height = 60
             };
             this.Controls.Add(lblTitulo);
 
-            TableLayoutPanel gridReportes = new TableLayoutPanel
-            {
-                ColumnCount = 2,
-                RowCount = 2,
+            FlowLayoutPanel pnlCards = new FlowLayoutPanel {
                 Dock = DockStyle.Fill,
-                Padding = new Padding(0, 20, 0, 0)
+                AutoScroll = true,
+                Padding = new Padding(0, 10, 0, 0)
             };
-            gridReportes.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            gridReportes.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            gridReportes.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            gridReportes.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            this.Controls.Add(gridReportes);
-            gridReportes.BringToFront();
+            this.Controls.Add(pnlCards);
 
-            gridReportes.Controls.Add(CrearTarjetaReporte("Reporte de Citas", "Resumen mensual de citas atendidas y canceladas.", Color.FromArgb(0, 184, 148)), 0, 0);
-            gridReportes.Controls.Add(CrearTarjetaReporte("Reporte de Clientes", "Nuevos registros y actividad de clientes por zona.", Color.FromArgb(9, 132, 227)), 1, 0);
-            gridReportes.Controls.Add(CrearTarjetaReporte("Reporte Médico", "Historial de diagnósticos y tratamientos frecuentes.", Color.FromArgb(253, 176, 34)), 0, 1);
-            gridReportes.Controls.Add(CrearTarjetaReporte("Reporte de Inventario", "Alertas de stock bajo y consumo de suministros.", Color.FromArgb(255, 118, 117)), 1, 1);
+            pnlCards.Controls.Add(CrearTarjetaReporte("Resumen de Citas", "Analiza la afluencia de pacientes por día y mes.", Color.FromArgb(0, 184, 148), "citas"));
+            pnlCards.Controls.Add(CrearTarjetaReporte("Rendimiento Económico", "Informe de ingresos por servicios y ventas de productos.", Color.FromArgb(9, 132, 227), "finanzas"));
+            pnlCards.Controls.Add(CrearTarjetaReporte("Estado de Inventario", "Productos próximos a caducar y alertas de stock bajo.", Color.FromArgb(255, 118, 117), "stock"));
+            pnlCards.Controls.Add(CrearTarjetaReporte("Actividad de Clientes", "Nuevos registros y fidelidad de los dueños.", Color.FromArgb(108, 117, 125), "clientes"));
         }
 
-        private Panel CrearTarjetaReporte(string titulo, string descripcion, Color colorAcento)
+        private Panel CrearTarjetaReporte(string titulo, string desc, Color color, string tipo)
         {
-            Panel pnl = new Panel
-            {
+            Panel card = new Panel {
+                Size = new Size(350, 200),
                 BackColor = Color.White,
                 Margin = new Padding(10),
-                Dock = DockStyle.Fill,
                 Padding = new Padding(20)
             };
 
-            Panel acento = new Panel { Dock = DockStyle.Left, Width = 5, BackColor = colorAcento };
-            pnl.Controls.Add(acento);
-
-            Label lblTit = new Label
-            {
-                Text = titulo,
-                Font = new Font("Segoe UI Semibold", 14F),
-                ForeColor = Color.FromArgb(45, 52, 54),
-                Dock = DockStyle.Top,
-                Height = 35,
-                Padding = new Padding(10, 0, 0, 0)
-            };
-            pnl.Controls.Add(lblTit);
-
-            Label lblDesc = new Label
-            {
-                Text = descripcion,
-                Font = new Font("Segoe UI", 10F),
-                ForeColor = Color.FromArgb(120, 130, 140),
-                Dock = DockStyle.Fill,
-                Padding = new Padding(10, 10, 0, 0)
-            };
-            pnl.Controls.Add(lblDesc);
-
-            Button btnGenerar = new Button
-            {
-                Text = "Generar PDF",
+            Label lblTit = new Label { Text = titulo, Font = new Font("Segoe UI Bold", 13F), Dock = DockStyle.Top, Height = 30 };
+            Label lblDesc = new Label { Text = desc, Font = new Font("Segoe UI", 10F), ForeColor = Color.Gray, Dock = DockStyle.Fill, Padding = new Padding(0, 10, 0, 0) };
+            
+            Button btnExportar = new Button {
+                Text = "📄 Exportar a PDF",
                 Dock = DockStyle.Bottom,
-                Height = 40,
-                FlatStyle = FlatStyle.Flat,
-                BackColor = colorAcento,
+                Height = 45,
+                BackColor = color,
                 ForeColor = Color.White,
-                Font = new Font("Segoe UI Bold", 10F),
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI Semibold", 10F),
                 Cursor = Cursors.Hand
             };
-            btnGenerar.FlatAppearance.BorderSize = 0;
-            pnl.Controls.Add(btnGenerar);
+            btnExportar.FlatAppearance.BorderSize = 0;
+            btnExportar.Click += (s, e) => ExportarReporte(tipo);
 
-            return pnl;
+            card.Controls.Add(lblDesc);
+            card.Controls.Add(lblTit);
+            card.Controls.Add(btnExportar);
+
+            return card;
+        }
+
+        private void ExportarReporte(string tipo)
+        {
+            // Aquí se integraría con GestorPDF.cs que el usuario tiene localmente
+            MessageBox.Show($"Generando reporte de {tipo}...\n\nEsta función utilizará el componente GestorPDF para crear el documento.", 
+                "Exportando Reporte", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void InitializeComponent()
         {
             this.SuspendLayout();
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1100, 700);
             this.FormBorderStyle = FormBorderStyle.None;
             this.Name = "FrmReportes";
-            this.Text = "Reportes";
+            this.Text = "Reportes Avanzados";
             this.ResumeLayout(false);
         }
     }
