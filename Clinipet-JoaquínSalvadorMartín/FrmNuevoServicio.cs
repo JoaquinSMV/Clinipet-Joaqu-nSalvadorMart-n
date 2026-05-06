@@ -30,8 +30,27 @@ namespace Clinipet_JoaquínSalvadorMartín
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.BackColor = Color.FromArgb(240, 242, 245);
+            this.Load += FrmNuevoServicio_Load;
 
             CrearControles();
+        }
+
+        private void FrmNuevoServicio_Load(object sender, EventArgs e)
+        {
+            // Pre-llenar los datos si existen
+            if (!string.IsNullOrEmpty(NombreServicio))
+                txtNombre.Text = NombreServicio;
+            if (!string.IsNullOrEmpty(Descripcion))
+                txtDescripcion.Text = Descripcion;
+            if (Precio > 0)
+                txtPrecio.Text = Precio.ToString("F2");
+            if (!string.IsNullOrEmpty(Categoria))
+            {
+                int index = cmbCategoria.Items.IndexOf(Categoria);
+                if (index >= 0)
+                    cmbCategoria.SelectedIndex = index;
+            }
+            chkActivo.Checked = Activo;
         }
 
         private void CrearControles()

@@ -36,8 +36,29 @@ namespace Clinipet_JoaquínSalvadorMartín
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.BackColor = Color.FromArgb(240, 242, 245);
+            this.Load += FrmNuevoProducto_Load;
 
             CrearControles();
+        }
+
+        private void FrmNuevoProducto_Load(object sender, EventArgs e)
+        {
+            // Pre-llenar los datos si existen
+            if (!string.IsNullOrEmpty(NombreProducto))
+                txtNombre.Text = NombreProducto;
+            if (!string.IsNullOrEmpty(Descripcion))
+                txtDescripcion.Text = Descripcion;
+            if (Cantidad > 0)
+                txtCantidad.Text = Cantidad.ToString();
+            if (CantidadMinima > 0)
+                txtCantidadMinima.Text = CantidadMinima.ToString();
+            if (Precio > 0)
+                txtPrecio.Text = Precio.ToString("F2");
+            if (FechaVencimiento != DateTime.MinValue)
+                dtpVencimiento.Value = FechaVencimiento;
+            if (!string.IsNullOrEmpty(Proveedor))
+                txtProveedor.Text = Proveedor;
+            chkActivo.Checked = Activo;
         }
 
         private void CrearControles()

@@ -147,13 +147,28 @@ namespace Clinipet_JoaquínSalvadorMartín
         {
             DataTable dtEjemplo = new DataTable();
             dtEjemplo.Columns.Add("nombre_medicamento", typeof(string));
+            dtEjemplo.Columns.Add("descripcion", typeof(string));
             dtEjemplo.Columns.Add("cantidad_stock", typeof(string));
+            dtEjemplo.Columns.Add("cantidad_minima", typeof(string));
             dtEjemplo.Columns.Add("precio_unitario", typeof(string));
             dtEjemplo.Columns.Add("proveedor", typeof(string));
-            dtEjemplo.Rows.Add("Paracetamol Vet", "50", "12.50€", "FarmaVet");
-            dtEjemplo.Rows.Add("Pienso Adulto 10kg", "12", "45.00€", "RoyalCanin");
-            dtEjemplo.Rows.Add("Collar Antiparasitario", "5", "18.90€", "Seresto");
+            dtEjemplo.Columns.Add("categoria", typeof(string));
+            dtEjemplo.Columns.Add("activo", typeof(string));
+            
+            dtEjemplo.Rows.Add("Paracetamol Vet", "Analgésico", "50", "10", "12.50€", "FarmaVet", "Medicamentos", "Sí");
+            dtEjemplo.Rows.Add("Pienso Adulto 10kg", "Nutrición", "12", "5", "45.00€", "RoyalCanin", "Alimento", "Sí");
+            dtEjemplo.Rows.Add("Collar Antiparasitario", "Prevención", "5", "2", "18.90€", "Seresto", "Accesorios", "Sí");
             dgvProductos.DataSource = dtEjemplo;
+            
+            // Llenar el ComboBox de categorías
+            if (cmbCategorias.Items.Count == 0)
+            {
+                cmbCategorias.Items.Add("Todos");
+                cmbCategorias.Items.Add("Medicamentos");
+                cmbCategorias.Items.Add("Alimento");
+                cmbCategorias.Items.Add("Accesorios");
+                cmbCategorias.SelectedIndex = 0;
+            }
         }
 
         private void FiltrarProductos()
