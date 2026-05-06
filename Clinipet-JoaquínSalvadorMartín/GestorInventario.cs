@@ -301,6 +301,53 @@ namespace Clinipet_JoaquínSalvadorMartín
         }
 
         /// <summary>
+        /// Actualiza los datos de un medicamento existente
+        /// </summary>
+        public bool ActualizarMedicamento(int idMedicamento, string nombre, string descripcion, int cantidad, 
+            int cantidadMinima, decimal precioUnitario, DateTime fechaVencimiento, string proveedor, bool activo)
+        {
+            try
+            {
+                conexion.Abrir();
+
+                string query = @"UPDATE medicamentos 
+                    SET nombre_medicamento = @nombre,
+                        descripcion = @descripcion,
+                        cantidad_stock = @cantidad,
+                        cantidad_minima = @cantidadMinima,
+                        precio_unitario = @precio,
+                        fecha_vencimiento = @fechaVencimiento,
+                        proveedor = @proveedor,
+                        activo = @activo,
+                        fecha_actualizacion = GETDATE()
+                    WHERE id_medicamento = @idMedicamento";
+
+                SqlCommand cmd = new SqlCommand(query, conexion.leer);
+                cmd.Parameters.AddWithValue("@idMedicamento", idMedicamento);
+                cmd.Parameters.AddWithValue("@nombre", nombre);
+                cmd.Parameters.AddWithValue("@descripcion", descripcion ?? "");
+                cmd.Parameters.AddWithValue("@cantidad", cantidad);
+                cmd.Parameters.AddWithValue("@cantidadMinima", cantidadMinima);
+                cmd.Parameters.AddWithValue("@precio", precioUnitario);
+                cmd.Parameters.AddWithValue("@fechaVencimiento", fechaVencimiento);
+                cmd.Parameters.AddWithValue("@proveedor", proveedor ?? "");
+                cmd.Parameters.AddWithValue("@activo", activo ? 1 : 0);
+
+                int resultado = cmd.ExecuteNonQuery();
+                return resultado > 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+                return false;
+            }
+            finally
+            {
+                conexion.Cerrar();
+            }
+        }
+
+        /// <summary>
         /// Obtiene medicamentos más utilizados
         /// </summary>
         public DataTable ObtenerMedicamentosMasUtilizados(int limite = 10)

@@ -204,6 +204,13 @@ namespace Clinipet_JoaquínSalvadorMartín
             }
 
             DataGridViewRow row = dgvServicios.SelectedRows[0];
+            
+            int idServicio = 0;
+            if (int.TryParse(row.Cells[0].Value?.ToString(), out int id))
+                idServicio = id;
+            else
+                idServicio = dgvServicios.SelectedRows[0].Index + 1;
+
             using (FrmNuevoServicio frm = new FrmNuevoServicio())
             {
                 frm.Text = "Editar Servicio";
@@ -215,8 +222,24 @@ namespace Clinipet_JoaquínSalvadorMartín
 
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    MessageBox.Show("Servicio actualizado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    CargarServicios();
+                    bool resultado = gestor.ActualizarServicio(
+                        idServicio,
+                        frm.NombreServicio,
+                        frm.Descripcion,
+                        frm.Precio,
+                        frm.Categoria,
+                        frm.Activo
+                    );
+
+                    if (resultado)
+                    {
+                        MessageBox.Show("Servicio actualizado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        CargarServicios();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error al actualizar el servicio.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }

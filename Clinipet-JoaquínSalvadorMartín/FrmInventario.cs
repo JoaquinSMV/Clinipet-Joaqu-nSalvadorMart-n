@@ -246,6 +246,14 @@ namespace Clinipet_JoaquínSalvadorMartín
             }
 
             DataGridViewRow row = dgvProductos.SelectedRows[0];
+            
+            // Obtener el ID del producto (asumiendo que está en la primera columna o en un tag)
+            int idProducto = 0;
+            if (int.TryParse(row.Cells[0].Value?.ToString(), out int id))
+                idProducto = id;
+            else
+                idProducto = dgvProductos.SelectedRows[0].Index + 1; // Fallback
+
             using (FrmNuevoProducto frm = new FrmNuevoProducto())
             {
                 frm.Text = "Editar Producto";
@@ -259,8 +267,28 @@ namespace Clinipet_JoaquínSalvadorMartín
 
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    MessageBox.Show("Producto actualizado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    CargarDatos();
+                    // Guardar los cambios en la base de datos
+                    bool resultado = gestor.ActualizarMedicamento(
+                        idProducto,
+                        frm.NombreProducto,
+                        frm.Descripcion,
+                        frm.Cantidad,
+                        frm.CantidadMinima,
+                        frm.Precio,
+                        frm.FechaVencimiento,
+                        frm.Proveedor,
+                        frm.Activo
+                    );
+
+                    if (resultado)
+                    {
+                        MessageBox.Show("Producto actualizado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        CargarDatos();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error al actualizar el producto.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }

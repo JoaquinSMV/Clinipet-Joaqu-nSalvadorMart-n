@@ -123,7 +123,7 @@ namespace Clinipet_JoaquínSalvadorMartín
         /// <summary>
         /// Actualiza un servicio existente
         /// </summary>
-        public bool ActualizarServicio(int idServicio, string nombre, string descripcion, decimal precio, string categoria)
+        public bool ActualizarServicio(int idServicio, string nombre, string descripcion, decimal precio, string categoria, bool activo = true)
         {
             try
             {
@@ -134,6 +134,7 @@ namespace Clinipet_JoaquínSalvadorMartín
                         descripcion = @descripcion,
                         precio = @precio,
                         categoria = @categoria,
+                        activo = @activo,
                         fecha_actualizacion = GETDATE()
                     WHERE id_servicio = @idServicio";
 
@@ -143,6 +144,7 @@ namespace Clinipet_JoaquínSalvadorMartín
                 cmd.Parameters.AddWithValue("@descripcion", descripcion ?? "");
                 cmd.Parameters.AddWithValue("@precio", precio);
                 cmd.Parameters.AddWithValue("@categoria", categoria);
+                cmd.Parameters.AddWithValue("@activo", activo ? 1 : 0);
 
                 int resultado = cmd.ExecuteNonQuery();
                 return resultado > 0;
